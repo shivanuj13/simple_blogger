@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -21,7 +24,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             const CircleAvatar(
               child: Icon(Icons.person),
             ),
-            const Text('Name'),
+            Text(FirebaseAuth.instance.currentUser?.displayName ?? 'Name'),
             const Text('Email'),
             TextButton(
                 onPressed: () {
@@ -34,7 +37,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 },
                 child: const Text('My Posts')),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  await context.read<AuthProvider>().signOut();
                   Navigator.popUntil(context, (route) => route.isFirst);
                   Navigator.pushReplacementNamed(context, RouteConst.signIn);
                 },

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "81744668621",
+    "project_id": "simple-blog-1313",
+    "storage_bucket": "simple-blog-1313.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81744668621:android:2de23c3be316577b8bc684",
+        "android_client_info": {
+          "package_name": "com.example.simple_blog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81744668621-e0cgjk9o6rfcknmg9m01r0t14aitkd06.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWuGkvktBye1X88v01K6lMwpoyzIZbCv8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81744668621-e0cgjk9o6rfcknmg9m01r0t14aitkd06.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
