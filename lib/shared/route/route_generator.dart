@@ -8,6 +8,7 @@ import 'package:simple_blog/post/ui/screens/post_screen.dart';
 import 'package:simple_blog/profile/my_profile_screen.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
+import '../../post/model/post_model.dart';
 import '../../profile/edit_profile_screen.dart';
 
 class RouteGenerator {
@@ -20,11 +21,19 @@ class RouteGenerator {
       case RouteConst.home:
         return _buildRoute(settings, const HomeScreen());
       case RouteConst.post:
-        return _buildRoute(settings, PostScreen());
+        return _buildRoute(
+            settings,
+            PostScreen(
+              isMyPost: settings.arguments as bool,
+            ));
       case RouteConst.myPosts:
         return _buildRoute(settings, const MyPostsScreen());
       case RouteConst.postEditor:
-        return _buildRoute(settings, const PostEditorScreen());
+        return _buildRoute(
+            settings,
+            PostEditorScreen(
+              postModel: settings.arguments as PostModel?,
+            ));
       case RouteConst.myProfile:
         return _buildRoute(settings, const MyProfileScreen());
       case RouteConst.editProfile:

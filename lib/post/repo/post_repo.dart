@@ -25,14 +25,19 @@ class PostRepo {
     return postList;
   }
 
-  Future<void> updatePost(PostModel postModel) async {
+  Future<void> updatePost(PostModel postModel, String? imgPath) async {
+    if (imgPath != null) {
+      deleteImage(postModel.photoUrl);
+      postModel.photoUrl = await uploadImage(imgPath);
+    }
     await _fireStore
         .collection('posts')
         .doc(postModel.uid)
         .update(postModel.toMap());
   }
 
-  Future<void> deletePost(String uid) async {
+  Future<void> deletePost(String uid,String photoUrl) async {
+    await deleteImage(photoUrl);
     await _fireStore.collection('posts').doc(uid).delete();
   }
 
@@ -45,6 +50,15 @@ class PostRepo {
           .putFile(File(path))
           .then((p0) => p0.ref.getDownloadURL());
       return url;
+    } on FirebaseException catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteImage(String path)  async {
+    try {
+      await _storage.refFromURL(path).delete();
     } on FirebaseException catch (e) {
       print(e);
       rethrow;

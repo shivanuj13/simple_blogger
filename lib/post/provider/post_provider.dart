@@ -35,4 +35,14 @@ class PostProvider extends ChangeNotifier {
         postList.where((element) => element.createdByUid == uId).toList();
     notifyListeners();
   }
+
+  Future<void> updatePost(PostModel postModel, String? imgPath) async {
+    await _postRepo.updatePost(postModel, imgPath);
+    notifyListeners();
+  }
+
+  Future<void> deletePost(String uid,String photoUrl) async {
+    await _postRepo.deletePost(uid,photoUrl);
+    notifyListeners();
+  }
 }

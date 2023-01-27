@@ -4,12 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
 import 'package:simple_blog/auth/model/user_model.dart';
 import 'package:simple_blog/post/model/post_model.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 
 class PostEditorScreen extends StatefulWidget {
-  const PostEditorScreen({super.key});
+  PostModel? postModel;
+  PostEditorScreen({
+    Key? key,
+    this.postModel,
+  }) : super(key: key);
 
   @override
   State<PostEditorScreen> createState() => _PostEditorScreenState();
@@ -19,6 +24,15 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
   String? imgPath;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
+  @override
+  void initState() {
+    if (widget.postModel != null) {
+      titleController.text = widget.postModel!.title;
+      contentController.text = widget.postModel!.content;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +44,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
             InkWell(
               onTap: () async {
                 await ImagePicker()
-                    .pickImage(source: ImageSource.gallery)
+                    .pickImage(source: ImageSource.camera)
                     .then((value) {
                   setState(() {
                     imgPath = value!.path;
@@ -46,7 +60,9 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                   ),
                 ),
                 child: imgPath == null
-                    ? Icon(Icons.add)
+                    ? widget.postModel != null
+                        ? Image.network(widget.postModel!.photoUrl)
+                        : const Icon(Icons.add)
                     : Image.file(File(imgPath!)),
               ),
             ),
@@ -70,13 +86,20 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                     uid: '',
                     title: titleController.text,
                     content: contentController.text,
-                    photoUrl: imgPath!,
+                    photoUrl: imgPath ?? '',
                     createdAt: DateTime.now(),
                     createdByUid: user.uid,
                   );
-                  await value.createPost(
-                    postModel,
-                  );
+                  if (widget.postModel != null) {
+                    postModel.uid = widget.postModel!.uid;
+                    postModel.photoUrl = widget.postModel!.photoUrl;
+
+                    await value.updatePost(postModel, imgPath);
+                  } else {
+                    await value.createPost(
+                      postModel,
+                    );
+                  }
                   Navigator.pop(context);
                 },
                 child: value.isUpLoading

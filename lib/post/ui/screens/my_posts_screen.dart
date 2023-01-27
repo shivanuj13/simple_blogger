@@ -22,7 +22,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
         onPressed: () {
           Navigator.pushNamed(context, RouteConst.postEditor);
         },
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.add),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -47,7 +47,8 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
                         ListTile(
                           onTap: () {
                             context.read<PostProvider>().selectPost(i);
-                            Navigator.pushNamed(context, RouteConst.post);
+                            Navigator.pushNamed(context, RouteConst.post,
+                                arguments: true);
                           },
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(

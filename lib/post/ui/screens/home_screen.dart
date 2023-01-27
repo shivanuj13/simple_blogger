@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           Navigator.pushNamed(context, RouteConst.postEditor);
         },
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.add),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -64,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ListTile(
                           onTap: () {
                             context.read<PostProvider>().selectPost(i);
-                            Navigator.pushNamed(context, RouteConst.post);
+                            Navigator.pushNamed(context, RouteConst.post,
+                                arguments: false);
                           },
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(
