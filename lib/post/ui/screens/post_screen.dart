@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_blog/post/provider/post_provider.dart';
 
 class PostScreen extends StatefulWidget {
   PostScreen({super.key, this.isEditable = false});
@@ -20,8 +22,15 @@ class _PostScreenState extends State<PostScreen> {
         appBar: AppBar(
           title: const Text('Post'),
         ),
-        body: const Center(
-          child: Text('Post Screen'),
-        ));
+        body: Consumer<PostProvider>(builder: (context, value, wid) {
+          return Column(
+            children: [
+              Image.network(
+                  value.postList.elementAt(value.selectedIndex!).photoUrl),
+              Text(value.postList.elementAt(value.selectedIndex!).title),
+              Text(value.postList.elementAt(value.selectedIndex!).content),
+            ],
+          );
+        }));
   }
 }

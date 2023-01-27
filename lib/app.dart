@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 import 'package:simple_blog/shared/route/route_generator.dart';
 
@@ -18,6 +19,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => PostProvider())
       ],
       child: MaterialApp(
         initialRoute: RouteConst.signIn,
