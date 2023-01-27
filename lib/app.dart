@@ -5,6 +5,7 @@ import 'package:simple_blog/shared/route/route_const.dart';
 import 'package:simple_blog/shared/route/route_generator.dart';
 
 import 'auth/provider/auth_provider.dart';
+import 'shared/util/shared_pref.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -22,7 +23,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => PostProvider())
       ],
       child: MaterialApp(
-        initialRoute: RouteConst.signIn,
+        initialRoute: SharedPref.instance.route,
         onGenerateRoute: RouteGenerator.generateRoute,
         theme:
             ThemeData(useMaterial3: true, colorSchemeSeed: Color(0xFF2C003E)),

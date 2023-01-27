@@ -4,6 +4,7 @@ import 'package:simple_blog/auth/repo/auth_repo.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepo _authRepo = AuthRepo();
+  
   bool isLoading = false;
   Future<void> insertUser(UserModel userModel, String password) async {
     isLoading = true;

@@ -43,13 +43,50 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
           children: [
             InkWell(
               onTap: () async {
-                await ImagePicker()
-                    .pickImage(source: ImageSource.camera)
-                    .then((value) {
-                  setState(() {
-                    imgPath = value!.path;
-                  });
-                });
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  final picker = ImagePicker();
+                                  final pickedFile = await picker.pickImage(
+                                      source: ImageSource.camera);
+                                  setState(() {
+                                    imgPath = pickedFile!.path;
+                                  });
+                                },
+                                icon: const Icon(Icons.camera_alt),
+                              ),
+                              const Text('Camera')
+                            ],
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                    final picker = ImagePicker();
+                                    final pickedFile = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    setState(() {
+                                      imgPath = pickedFile!.path;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.image)),
+                              const Text('Gallery')
+                            ],
+                          ),
+                        ],
+                      );
+                    });
               },
               child: Container(
                 height: 100,
