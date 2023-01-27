@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
 import 'package:simple_blog/post/model/post_model.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
+import 'package:simple_blog/shared/ui/widget/pick_image_bottom_sheet.dart';
 
 class PostEditorScreen extends StatefulWidget {
   PostModel? postModel;
@@ -43,50 +44,13 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
           children: [
             InkWell(
               onTap: () async {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                  final picker = ImagePicker();
-                                  final pickedFile = await picker.pickImage(
-                                      source: ImageSource.camera);
-                                  setState(() {
-                                    imgPath = pickedFile!.path;
-                                  });
-                                },
-                                icon: const Icon(Icons.camera_alt),
-                              ),
-                              const Text('Camera')
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                    final picker = ImagePicker();
-                                    final pickedFile = await picker.pickImage(
-                                        source: ImageSource.gallery);
-                                    setState(() {
-                                      imgPath = pickedFile!.path;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.image)),
-                              const Text('Gallery')
-                            ],
-                          ),
-                        ],
-                      );
+                PickImageBottomSheet.instance.show(context, (source) {
+                  ImagePicker().pickImage(source: source).then((value) {
+                    setState(() {
+                      imgPath = value?.path;
                     });
+                  });
+                });
               },
               child: Container(
                 height: 100,

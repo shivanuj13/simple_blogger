@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 import 'package:simple_blog/shared/route/route_generator.dart';
@@ -22,12 +23,16 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => PostProvider())
       ],
-      child: MaterialApp(
-        initialRoute: SharedPref.instance.route,
-        onGenerateRoute: RouteGenerator.generateRoute,
-        theme:
-            ThemeData(useMaterial3: true, colorSchemeSeed: Color(0xFF2C003E)),
-      ),
+      child: ResponsiveSizer(builder: (context, orientation, screenType) {
+        return MaterialApp(
+          initialRoute: SharedPref.instance.route,
+          onGenerateRoute: RouteGenerator.generateRoute,
+          theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: Colors.black,
+          ),
+        );
+      }),
     );
   }
 }
