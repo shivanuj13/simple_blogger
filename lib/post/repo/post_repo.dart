@@ -9,36 +9,52 @@ class PostRepo {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<void> createPost(PostModel postModel) async {
-    postModel.photoUrl = await uploadImage(postModel.photoUrl);
-    DocumentReference reference =
-        await _fireStore.collection('posts').add(postModel.toMap());
-    await reference.update({'uid': reference.id});
+    try {
+      postModel.photoUrl = await uploadImage(postModel.photoUrl);
+      DocumentReference reference =
+          await _fireStore.collection('posts').add(postModel.toMap());
+      await reference.update({'uid': reference.id});
+    } on FirebaseException {
+      rethrow;
+    }
   }
 
   Future<List<PostModel>> readPost() async {
     List<PostModel> postList = [];
-    await _fireStore.collection('posts').get().then((snapshot) {
-      for (var doc in snapshot.docs) {
-        postList.add(PostModel.fromMap(doc.data()));
-      }
-    });
-    return postList;
+    try {
+      await _fireStore.collection('posts').get().then((snapshot) {
+        for (var doc in snapshot.docs) {
+          postList.add(PostModel.fromMap(doc.data()));
+        }
+      });
+      return postList;
+    } on FirebaseException {
+      rethrow;
+    }
   }
 
   Future<void> updatePost(PostModel postModel, String? imgPath) async {
-    if (imgPath != null) {
-      deleteImage(postModel.photoUrl);
-      postModel.photoUrl = await uploadImage(imgPath);
+    try {
+      if (imgPath != null) {
+        deleteImage(postModel.photoUrl);
+        postModel.photoUrl = await uploadImage(imgPath);
+      }
+      await _fireStore
+          .collection('posts')
+          .doc(postModel.uid)
+          .update(postModel.toMap());
+    } on FirebaseException {
+      rethrow;
     }
-    await _fireStore
-        .collection('posts')
-        .doc(postModel.uid)
-        .update(postModel.toMap());
   }
 
-  Future<void> deletePost(String uid,String photoUrl) async {
-    await deleteImage(photoUrl);
-    await _fireStore.collection('posts').doc(uid).delete();
+  Future<void> deletePost(String uid, String photoUrl) async {
+    try {
+      await deleteImage(photoUrl);
+      await _fireStore.collection('posts').doc(uid).delete();
+    } on FirebaseException {
+      rethrow;
+    }
   }
 
   Future<String> uploadImage(String path) async {
@@ -51,16 +67,14 @@ class PostRepo {
           .then((p0) => p0.ref.getDownloadURL());
       return url;
     } on FirebaseException catch (e) {
-      print(e);
       rethrow;
     }
   }
 
-  Future<void> deleteImage(String path)  async {
+  Future<void> deleteImage(String path) async {
     try {
       await _storage.refFromURL(path).delete();
     } on FirebaseException catch (e) {
-      print(e);
       rethrow;
     }
   }

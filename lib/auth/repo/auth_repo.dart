@@ -17,14 +17,12 @@ class AuthRepo {
         password: password,
       );
       await userCredential.user!.updateDisplayName(userModel.name);
-      // await userCredential.user!.updatePhotoURL(userModel.photoUrl);
       userModel.uid = userCredential.user!.uid;
       await insertUser(userModel);
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
-      print(e);
+      rethrow;
     }
-    return null;
   }
 
   Future<void> insertUser(UserModel userModel) async {
@@ -38,7 +36,7 @@ class AuthRepo {
         'joinedAt': userModel.joinedAt,
       });
     } on FirebaseException catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -52,7 +50,6 @@ class AuthRepo {
           .then((p0) => p0.ref.getDownloadURL());
       return url;
     } on FirebaseException catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -64,10 +61,9 @@ class AuthRepo {
         password: password,
       );
       return userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      print(e);
+    } on FirebaseAuthException {
+      rethrow;
     }
-    return null;
   }
 
   Future<void> signOut() async {

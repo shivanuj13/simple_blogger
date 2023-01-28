@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
-import 'package:simple_blog/shared/route/route_const.dart';
 import 'package:simple_blog/shared/route/route_generator.dart';
 
 import 'auth/provider/auth_provider.dart';
@@ -29,7 +28,12 @@ class _MyAppState extends State<MyApp> {
           onGenerateRoute: RouteGenerator.generateRoute,
           theme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: Colors.black,
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF850E35),
+              secondary: Color(0xFFEE6983),
+              surface: Color(0xFFF7EFE5),
+              background: Color(0xFFFFFBF5),
+            ),
           ),
         );
       }),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
 import '../../provider/post_provider.dart';
+import '../widget/post_snippet_widget.dart';
 
 class MyPostsScreen extends StatefulWidget {
   const MyPostsScreen({super.key});
@@ -28,44 +29,22 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
         onRefresh: () async {
           await context.read<PostProvider>().readPost();
         },
-        child: SingleChildScrollView(
-          child: Consumer<PostProvider>(builder: (context, value, wid) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height,
-                maxHeight: MediaQuery.of(context).size.height,
-              ),
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      if (!value.isLoading && value.myPostList.isEmpty)
-                        const Center(
-                          child: Text('No Post'),
-                        ),
-                      for (int i = 0; i < value.myPostList.length; i++)
-                        ListTile(
-                          onTap: () {
-                            context.read<PostProvider>().selectPost(i);
-                            Navigator.pushNamed(context, RouteConst.post,
-                                arguments: true);
-                          },
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              value.myPostList.elementAt(i).photoUrl,
-                            ),
-                          ),
-                          title: Text(value.myPostList.elementAt(i).title),
-                          subtitle: Text(value.myPostList.elementAt(i).content),
-                        ),
-                    ],
-                  ),
-                  if (value.isLoading) const LinearProgressIndicator(),
-                ],
-              ),
-            );
-          }),
-        ),
+        child: Consumer<PostProvider>(builder: (context, value, wid) {
+          return Stack(
+            children: [
+              ListView.builder(
+                  itemCount: value.myPostList.length,
+                  itemBuilder: (context, index) {
+                    return PostSnippetWidget(
+                      index: index,
+                      postModel: value.myPostList[index],
+                      isMyPost: true,
+                    );
+                  }),
+              if (value.isLoading) const LinearProgressIndicator(),
+            ],
+          );
+        }),
       ),
     );
   }

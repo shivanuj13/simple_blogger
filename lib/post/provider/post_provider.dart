@@ -10,6 +10,7 @@ class PostProvider extends ChangeNotifier {
   int? selectedIndex;
   bool isLoading = false;
   bool isUpLoading = false;
+  bool isDeleting = false;
   final PostRepo _postRepo = PostRepo();
 
   void selectPost(int index) {
@@ -20,29 +21,62 @@ class PostProvider extends ChangeNotifier {
   Future<void> createPost(PostModel postModel) async {
     isUpLoading = true;
     notifyListeners();
-    await _postRepo.createPost(postModel);
-    isUpLoading = false;
-    notifyListeners();
+    try {
+      await _postRepo.createPost(postModel);
+      readPost();
+      isUpLoading = false;
+      notifyListeners();
+    } on FirebaseException {
+      isUpLoading = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> readPost() async {
     String uId = FirebaseAuth.instance.currentUser!.uid;
     isLoading = true;
     notifyListeners();
-    postList = await _postRepo.readPost();
-    isLoading = false;
-    myPostList =
-        postList.where((element) => element.createdByUid == uId).toList();
-    notifyListeners();
+    try {
+      postList = await _postRepo.readPost();
+      isLoading = false;
+      myPostList =
+          postList.where((element) => element.createdByUid == uId).toList();
+      notifyListeners();
+    } on FirebaseException {
+      isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> updatePost(PostModel postModel, String? imgPath) async {
-    await _postRepo.updatePost(postModel, imgPath);
+    isUpLoading = true;
     notifyListeners();
+    try {
+      await _postRepo.updatePost(postModel, imgPath);
+      readPost();
+      isUpLoading = false;
+      notifyListeners();
+    } on FirebaseException {
+      isUpLoading = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 
-  Future<void> deletePost(String uid,String photoUrl) async {
-    await _postRepo.deletePost(uid,photoUrl);
+  Future<void> deletePost(String uid, String photoUrl) async {
+    isDeleting = true;
     notifyListeners();
+    try {
+      await _postRepo.deletePost(uid, photoUrl);
+      readPost();
+      isDeleting = false;
+      notifyListeners();
+    } on FirebaseException catch (e) {
+      isDeleting = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 }
