@@ -27,6 +27,8 @@ class PostRepo {
           postList.add(PostModel.fromMap(doc.data()));
         }
       });
+      //sort post list by date
+      postList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return postList;
     } on FirebaseException {
       rethrow;
@@ -66,7 +68,7 @@ class PostRepo {
           .putFile(File(path))
           .then((p0) => p0.ref.getDownloadURL());
       return url;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -74,7 +76,7 @@ class PostRepo {
   Future<void> deleteImage(String path) async {
     try {
       await _storage.refFromURL(path).delete();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }

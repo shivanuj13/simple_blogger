@@ -37,6 +37,24 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
+    isLoading = true;
+    notifyListeners();
     await _authRepo.signOut();
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> updateUser(String name, String? imgPath) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      await _authRepo.updateUser(name, imgPath);
+      isLoading = false;
+      notifyListeners();
+    } on FirebaseException {
+      isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
@@ -25,12 +26,68 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: SafeArea(
+          child: Builder(builder: (context) {
+            return Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    child: IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).closeDrawer();
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 6.h,
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text('My Profile'),
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    Navigator.pushNamed(context, RouteConst.myProfile);
+                  },
+                ),
+                // ListTile(
+                //   leading: const Icon(Icons.help_outline),
+                //   title: const Text('Help'),
+                //   onTap: () {
+                //     Scaffold.of(context).closeDrawer();
+                //   },
+                // ),
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('About'),
+                  onTap: () {
+                    Scaffold.of(context).closeDrawer();
+                    Navigator.pushNamed(context, RouteConst.about);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () async {
+                    await context.read<AuthProvider>().signOut();
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.pushReplacementNamed(context, RouteConst.signIn);
+                  },
+                  trailing: context.watch<AuthProvider>().isLoading
+                      ? const CircularProgressIndicator()
+                      : null,
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
       appBar: AppBar(
-        title: const Text('Home'),
         actions: [
           IconButton(
             onPressed: () {
@@ -67,12 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               if (value.isLoading) const LinearProgressIndicator(),
-            ],
+            ].animate(interval: 100.ms).fadeIn().moveY(begin: 4.h),
           );
         }),
       ),
     );
   }
 }
-
-

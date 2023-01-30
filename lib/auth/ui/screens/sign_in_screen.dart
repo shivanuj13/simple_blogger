@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
@@ -74,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             context, RouteConst.signUp);
                       },
                       child: const Text('Don\'t have an account? Sign Up')),
-                ],
+                ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),
               ),
             ),
           ),

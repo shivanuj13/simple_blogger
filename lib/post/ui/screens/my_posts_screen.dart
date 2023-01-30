@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
 import '../../provider/post_provider.dart';
@@ -42,7 +44,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
                     );
                   }),
               if (value.isLoading) const LinearProgressIndicator(),
-            ],
+            ].animate(interval: 100.ms).fadeIn().moveY(begin: 4.h),
           );
         }),
       ),

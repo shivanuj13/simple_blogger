@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import 'package:simple_blog/auth/model/user_model.dart';
 import 'package:simple_blog/post/model/post_model.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/ui/widget/pick_image_bottom_sheet.dart';
@@ -15,8 +14,8 @@ import '../widget/content_field_widget.dart';
 import '../widget/title_field_widget.dart';
 
 class PostEditorScreen extends StatefulWidget {
-  PostModel? postModel;
-  PostEditorScreen({
+  final PostModel? postModel;
+  const PostEditorScreen({
     Key? key,
     this.postModel,
   }) : super(key: key);
@@ -101,7 +100,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                   ContentFieldWidget(contentController: contentController),
                   Consumer<PostProvider>(builder: (context, value, wid) {
                     return value.isUpLoading
-                        ? RefreshProgressIndicator()
+                        ? const RefreshProgressIndicator()
                         : ElevatedButton(
                             onPressed: () async {
                               if (!formKey.currentState!.validate()) {
@@ -109,7 +108,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                               }
                               if (imgPath == null && widget.postModel == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                     content: Text('Please select an image'),
                                   ),
                                 );

@@ -1,21 +1,37 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_blog/auth/model/user_model.dart';
 
+import '../../auth/repo/auth_repo.dart';
 import '../model/post_model.dart';
 import '../repo/post_repo.dart';
 
 class PostProvider extends ChangeNotifier {
   List<PostModel> postList = [];
   List<PostModel> myPostList = [];
+  List<UserModel> userList = [];
   int? selectedIndex;
   bool isLoading = false;
   bool isUpLoading = false;
   bool isDeleting = false;
   final PostRepo _postRepo = PostRepo();
+  final AuthRepo _authRepo = AuthRepo();
 
   void selectPost(int index) {
     selectedIndex = index;
     notifyListeners();
+  }
+
+  UserModel? getUser(String uid) {
+    return userList.firstWhere((element) => element.uid == uid, orElse: () {
+      return UserModel(
+        uid: '',
+        name: '',
+        email: '',
+        photoUrl: '',
+        joinedAt: DateTime.now(),
+      );
+    });
   }
 
   Future<void> createPost(PostModel postModel) async {
@@ -39,6 +55,7 @@ class PostProvider extends ChangeNotifier {
     notifyListeners();
     try {
       postList = await _postRepo.readPost();
+      userList = await _authRepo.fetchUsers();
       isLoading = false;
       myPostList =
           postList.where((element) => element.createdByUid == uId).toList();
@@ -73,7 +90,7 @@ class PostProvider extends ChangeNotifier {
       readPost();
       isDeleting = false;
       notifyListeners();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       isDeleting = false;
       notifyListeners();
       rethrow;

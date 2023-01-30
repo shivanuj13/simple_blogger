@@ -9,6 +9,17 @@ class AuthRepo {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  Future<List<UserModel>> fetchUsers() async {
+    List<UserModel> userList = [];
+    await _fireStore.collection('users').get().then((snapshot) {
+      for (var doc in snapshot.docs) {
+        userList.add(UserModel.fromMap(doc.data()));
+      }
+    });
+    return userList;
+  }
+
   Future<User?> signUp(UserModel userModel, String password) async {
     try {
       UserCredential userCredential =
@@ -20,7 +31,7 @@ class AuthRepo {
       userModel.uid = userCredential.user!.uid;
       await insertUser(userModel);
       return userCredential.user;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       rethrow;
     }
   }
@@ -28,14 +39,32 @@ class AuthRepo {
   Future<void> insertUser(UserModel userModel) async {
     try {
       userModel.photoUrl = await uploadImage(userModel.photoUrl);
-      await _fireStore.collection('users').add({
-        'uid': userModel.uid,
-        'name': userModel.name,
-        'email': userModel.email,
-        'photoUrl': userModel.photoUrl,
-        'joinedAt': userModel.joinedAt,
+      await _auth.currentUser!.updatePhotoURL(userModel.photoUrl);
+      await _fireStore.collection('users').add(userModel.toMap());
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUser(String name, String? imgPath) async {
+    String photoUrl = _auth.currentUser!.photoURL ?? "";
+    try {
+      if (imgPath != null) {
+        await deleteImage(photoUrl);
+        photoUrl = await uploadImage(imgPath);
+        _auth.currentUser!.updatePhotoURL(photoUrl);
+      }
+      _auth.currentUser!.updateDisplayName(name);
+      DocumentReference documentReference = await _fireStore
+          .collection('users')
+          .where('id', isEqualTo: _auth.currentUser!.uid)
+          .get()
+          .then((value) => value.docs.first.reference);
+      await documentReference.update({
+        'name': name,
+        'photoUrl': photoUrl,
       });
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       rethrow;
     }
   }
@@ -49,7 +78,15 @@ class AuthRepo {
           .putFile(File(path))
           .then((p0) => p0.ref.getDownloadURL());
       return url;
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteImage(String url) async {
+    try {
+      await _storage.refFromURL(url).delete();
+    } on FirebaseException {
       rethrow;
     }
   }

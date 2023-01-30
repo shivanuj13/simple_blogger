@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -8,10 +9,11 @@ import 'package:simple_blog/post/provider/post_provider.dart';
 
 import '../../../shared/const/text_style_const.dart';
 import '../../../shared/route/route_const.dart';
+import '../widget/fadable_appbar_widget.dart';
 
 class PostScreen extends StatefulWidget {
-  bool isMyPost;
-  PostScreen({
+  final bool isMyPost;
+  const PostScreen({
     super.key,
     required this.isMyPost,
   });
@@ -22,7 +24,7 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   String uid = FirebaseAuth.instance.currentUser!.uid;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   double _scrollPosition = 0;
 
   @override
@@ -53,53 +55,60 @@ class _PostScreenState extends State<PostScreen> {
                       child: const Icon(Icons.edit),
                     )
                   : null,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.white
-                .withOpacity((_scrollPosition / 200).clamp(0, 1).toDouble()),
-            foregroundColor: _scrollPosition < 15.h ? Colors.white : null,
-            actions: [
-              if (postList.elementAt(value.selectedIndex!).createdByUid == uid)
-                IconButton(
-                  onPressed: context.watch<PostProvider>().isDeleting
-                      ? null
-                      : () async {
-                          try {
-                            await context.read<PostProvider>().deletePost(
-                                postList.elementAt(value.selectedIndex!).uid,
-                                postList
-                                    .elementAt(value.selectedIndex!)
-                                    .photoUrl);
-                            Navigator.pop(context);
-                          } on FirebaseException catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.message!),
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(10.h),
+              child: FadableAppBar(
+                scrollPosition: _scrollPosition,
+                actions: [
+                  if (postList.elementAt(value.selectedIndex!).createdByUid ==
+                      uid)
+                    IconButton(
+                      onPressed: context.watch<PostProvider>().isDeleting
+                          ? null
+                          : () async {
+                              try {
+                                await context.read<PostProvider>().deletePost(
+                                    postList
+                                        .elementAt(value.selectedIndex!)
+                                        .uid,
+                                    postList
+                                        .elementAt(value.selectedIndex!)
+                                        .photoUrl);
+                                Navigator.pop(context);
+                              } on FirebaseException catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.message!),
+                                  ),
+                                );
+                              }
+                            },
+                      icon: context.watch<PostProvider>().isDeleting
+                          ? SizedBox(
+                              height: 4.h,
+                              width: 4.h,
+                              child: CircularProgressIndicator(
+                                color: _scrollPosition < 15.h
+                                    ? Colors.white
+                                    : null,
                               ),
-                            );
-                          }
-                        },
-                  icon: context.watch<PostProvider>().isDeleting
-                      ? SizedBox(
-                          height: 4.h,
-                          width: 4.h,
-                          child: CircularProgressIndicator(
-                            color: _scrollPosition < 15.h ? Colors.white : null,
-                          ),
-                        )
-                      : const Icon(Icons.delete),
-                )
-            ],
-          ),
+                            )
+                          : const Icon(Icons.delete),
+                    )
+                ],
+              )),
           body: Stack(
             children: [
               Stack(
                 children: [
-                  Image.network(
-                      postList.elementAt(value.selectedIndex!).photoUrl,
-                      height: 34.h,
-                      width: 100.w,
-                      fit: BoxFit.cover),
+                  Hero(
+                    tag: postList.elementAt(value.selectedIndex!).uid,
+                    child: Image.network(
+                        postList.elementAt(value.selectedIndex!).photoUrl,
+                        height: 34.h,
+                        width: 100.w,
+                        fit: BoxFit.cover),
+                  ),
                   Container(
                     color: Colors.black.withOpacity(0.4),
                     height: 34.h,
@@ -153,10 +162,27 @@ class _PostScreenState extends State<PostScreen> {
                             style: TextStyleConst.contentBlack,
                             textAlign: TextAlign.justify,
                           ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              '\u{270E}   ${value.getUser(postList.elementAt(value.selectedIndex!).createdByUid)?.name}',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 16.sp,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
                         ],
                       ),
                     ),
-                  ],
+                  ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),
                 ),
               ),
             ],

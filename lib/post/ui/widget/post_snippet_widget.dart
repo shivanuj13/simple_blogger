@@ -49,11 +49,14 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
                   child: Stack(
                     alignment: Alignment.topRight,
                     children: [
-                      Image.network(
-                        widget.postModel.photoUrl,
-                        height: 20.h,
-                        width: 100.w,
-                        fit: BoxFit.cover,
+                      Hero(
+                        tag: widget.postModel.uid,
+                        child: Image.network(
+                          widget.postModel.photoUrl,
+                          height: 20.h,
+                          width: 100.w,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -78,6 +81,10 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyleConst.title(context),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.primary,
+                      thickness: 0.8,
                     ),
                     Text(
                       widget.postModel.content,
