@@ -20,16 +20,22 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   String? imgPathLocal;
   String? imgPathNetwork;
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   @override
   void initState() {
     if (FirebaseAuth.instance.currentUser!.displayName != null) {
-      nameController.text = FirebaseAuth.instance.currentUser!.displayName!;
+      _nameController.text = FirebaseAuth.instance.currentUser!.displayName!;
     }
     if (FirebaseAuth.instance.currentUser!.photoURL != null) {
       imgPathNetwork = FirebaseAuth.instance.currentUser!.photoURL;
     }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,23 +65,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               });
                             }));
                   },
-                  child: CircleAvatar(
-                    radius: 50,
-                    foregroundImage: imgPathLocal == null
-                        ? imgPathNetwork == null
-                            ? null
-                            : NetworkImage(imgPathNetwork!)
-                        : FileImage(File(imgPathLocal!)) as ImageProvider,
-                    child: imgPathLocal == null && imgPathNetwork == null
-                        ? Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 24.sp,
-                          )
-                        : null,
+                  child: Hero(
+                    tag: 'profile',
+                    child: CircleAvatar(
+                      radius: 50,
+                      foregroundImage: imgPathLocal == null
+                          ? imgPathNetwork == null
+                              ? null
+                              : NetworkImage(imgPathNetwork!)
+                          : FileImage(File(imgPathLocal!)) as ImageProvider,
+                      child: imgPathLocal == null && imgPathNetwork == null
+                          ? Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 24.sp,
+                            )
+                          : null,
+                    ),
                   ),
                 ),
                 SizedBox(height: 4.h),
-                NameFieldWidget(nameController: nameController),
+                NameFieldWidget(nameController: _nameController),
                 SizedBox(height: 1.h),
                 context.watch<AuthProvider>().isLoading
                     ? const RefreshProgressIndicator()
@@ -83,9 +92,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onPressed: () async {
                           await context
                               .read<AuthProvider>()
-                              .updateUser(nameController.text, imgPathLocal);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                              .updateUser(_nameController.text, imgPathLocal);
+                          if(mounted) {
+                            Navigator.pop(context);
+                          }
+                          if(mounted) {
+                            Navigator.pop(context);
+                          }
                         },
                         child: const Text('Update'),
                       ),

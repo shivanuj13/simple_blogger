@@ -17,8 +17,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   Future<void> signIn() async {
@@ -29,12 +29,21 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       await context
           .read<AuthProvider>()
-          .signIn(emailController.text, passwordController.text);
-      Navigator.pushReplacementNamed(context, RouteConst.home);
+          .signIn(_emailController.text, _passwordController.text);
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, RouteConst.home);
+      }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message!)));
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,12 +61,12 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 children: [
                   EmailFieldWidget(
-                    emailController: emailController,
+                    emailController: _emailController,
                   ),
                   SizedBox(
                     height: 2.h,
                   ),
-                  PasswordFieldWidget(passwordController: passwordController),
+                  PasswordFieldWidget(passwordController: _passwordController),
                   SizedBox(
                     height: 6.h,
                   ),

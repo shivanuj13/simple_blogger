@@ -22,6 +22,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
         title: const Text('My Posts'),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'post',
         onPressed: () {
           Navigator.pushNamed(context, RouteConst.postEditor);
         },

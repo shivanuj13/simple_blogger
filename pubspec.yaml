@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.17.0
   shared_preferences: ^2.0.17
   flutter_animate: ^3.1.0
+  fadable_app_bar: ^0.0.3
 
 dev_dependencies:
   flutter_test:

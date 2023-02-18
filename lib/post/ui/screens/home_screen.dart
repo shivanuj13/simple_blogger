@@ -75,8 +75,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: const Text('Logout'),
                   onTap: () async {
                     await context.read<AuthProvider>().signOut();
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pushReplacementNamed(context, RouteConst.signIn);
+                    if (mounted) {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    }
+                    if (mounted) {
+                      Navigator.pushReplacementNamed(
+                          context, RouteConst.signIn);
+                    }
                   },
                   trailing: context.watch<AuthProvider>().isLoading
                       ? const CircularProgressIndicator()
@@ -89,15 +94,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, RouteConst.myProfile);
-            },
-            icon: const Icon(Icons.person),
+          Hero(
+            tag: 'profile',
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, RouteConst.myProfile);
+              },
+              icon: const Icon(Icons.person),
+            ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'post',
         onPressed: () {
           Navigator.pushNamed(context, RouteConst.postEditor);
         },

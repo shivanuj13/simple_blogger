@@ -36,20 +36,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                 ),
               ),
-              Material(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22.sp)),
-                elevation: 8,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22.sp),
-                  child: FirebaseAuth.instance.currentUser?.photoURL == null
-                      ? Icon(Icons.person, size: 22.w)
-                      : Image.network(
-                          FirebaseAuth.instance.currentUser!.photoURL!,
-                          width: 22.w,
-                          height: 22.w,
-                          fit: BoxFit.cover,
-                        ),
+              Hero(
+                tag: 'profile',
+                child: Material(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22.sp)),
+                  elevation: 8,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(22.sp),
+                    child: FirebaseAuth.instance.currentUser?.photoURL == null
+                        ? Icon(Icons.person, size: 22.w)
+                        : Image.network(
+                            FirebaseAuth.instance.currentUser!.photoURL!,
+                            width: 22.w,
+                            height: 22.w,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
                 ),
               )
             ],
@@ -93,8 +96,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ListTile(
                   onTap: () async {
                     await context.read<AuthProvider>().signOut();
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pushReplacementNamed(context, RouteConst.signIn);
+                    if (mounted) {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    }
+                    if (mounted) {
+                      Navigator.pushReplacementNamed(
+                          context, RouteConst.signIn);
+                    }
                   },
                   trailing: const Icon(Icons.logout),
                   title: const Text("Log Out"),

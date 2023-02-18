@@ -24,10 +24,19 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   String? imgPath;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +80,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   SizedBox(height: 6.h),
-                  NameFieldWidget(nameController: nameController),
-                  EmailFieldWidget(emailController: emailController),
-                  PasswordFieldWidget(passwordController: passwordController),
+                  NameFieldWidget(nameController: _nameController),
+                  EmailFieldWidget(emailController: _emailController),
+                  PasswordFieldWidget(passwordController: _passwordController),
                   SizedBox(height: 6.h),
                   Consumer<AuthProvider>(builder: (context, value, wid) {
                     return value.isLoading
@@ -92,13 +101,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   await value.insertUser(
                                       UserModel(
                                           uid: '',
-                                          name: nameController.text,
-                                          email: emailController.text,
+                                          name: _nameController.text,
+                                          email: _emailController.text,
                                           photoUrl: imgPath ?? '',
                                           joinedAt: DateTime.now()),
-                                      passwordController.text);
-                                  Navigator.pushReplacementNamed(
-                                      context, RouteConst.home);
+                                      _passwordController.text);
+                                  if (mounted) {
+                                    Navigator.pushReplacementNamed(
+                                        context, RouteConst.home);
+                                  }
                                 } on FirebaseAuthException catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(e.message ?? '')));
