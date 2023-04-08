@@ -7,6 +7,7 @@ class PostModel {
   String photoUrl;
   DateTime createdAt;
   String createdByUid;
+  List<String> likedByUid;
   
   PostModel({
     required this.uid,
@@ -15,6 +16,7 @@ class PostModel {
     required this.photoUrl,
     required this.createdAt,
     required this.createdByUid,
+    required this.likedByUid,
   });
 
 
@@ -27,6 +29,7 @@ class PostModel {
       'photoUrl': photoUrl,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'createdByUid': createdByUid,
+      'likedByUid': likedByUid,
     };
   }
 
@@ -38,6 +41,7 @@ class PostModel {
       photoUrl: map['photoUrl'] ?? '',
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       createdByUid: map['createdByUid'] ?? '',
+      likedByUid: List<String>.from(map['likedByUid']),
     );
   }
 
@@ -47,6 +51,6 @@ class PostModel {
 
   @override
   String toString() {
-    return 'PostModel(uid: $uid, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid,)';
+    return 'PostModel(uid: $uid, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid, likedByUid: $likedByUid)';
   }
 }

@@ -58,6 +58,10 @@ class _PostScreenState extends State<PostScreen>
   @override
   Widget build(BuildContext context) {
     return Consumer<PostProvider>(builder: (context, value, wid) {
+      bool isLiked = value.postList
+          .elementAt(value.selectedIndex!)
+          .likedByUid
+          .contains(uid);
       List<PostModel> postList =
           widget.isMyPost ? value.myPostList : value.postList;
       return Scaffold(
@@ -144,14 +148,6 @@ class _PostScreenState extends State<PostScreen>
                           height: 30.h,
                           width: 80.w,
                           fit: BoxFit.cover,
-                        ).animate(
-                          controller: _animationController,
-                          effects: [
-                            const FadeEffect(
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.easeIn,
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -196,6 +192,34 @@ class _PostScreenState extends State<PostScreen>
                               fontSize: 16.sp,
                             ),
                             textAlign: TextAlign.justify,
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  if(isLiked){
+                                    context.read<PostProvider>().unlikePost();
+                                  }else{
+                                    context.read<PostProvider>().likePost();
+                                  }
+                                },
+                                icon: Icon(
+                                  isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_outline,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              Text(postList
+                                  .elementAt(value.selectedIndex!)
+                                  .likedByUid
+                                  .length
+                                  .toString()),
+                            ],
                           ),
                           SizedBox(
                             height: 2.h,

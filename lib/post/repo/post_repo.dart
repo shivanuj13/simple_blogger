@@ -50,6 +50,26 @@ class PostRepo {
     }
   }
 
+  Future<void> likePost(String postId, String uid) async {
+    try {
+      await _fireStore.collection('posts').doc(postId).update({
+        'likedByUid': FieldValue.arrayUnion([uid])
+      });
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  Future<void> unlikePost(String postId, String uid) async {
+    try {
+      await _fireStore.collection('posts').doc(postId).update({
+        'likedByUid': FieldValue.arrayRemove([uid])
+      });
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
   Future<void> deletePost(String uid, String photoUrl) async {
     try {
       await deleteImage(photoUrl);

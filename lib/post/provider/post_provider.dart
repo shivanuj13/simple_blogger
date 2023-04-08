@@ -82,6 +82,28 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> likePost() async {
+    String postId = postList.elementAt(selectedIndex!).uid;
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      await _postRepo.likePost(postId, uid);
+      readPost();
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  Future<void> unlikePost() async {
+    String postId = postList.elementAt(selectedIndex!).uid;
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      await _postRepo.unlikePost(postId, uid);
+      readPost();
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
   Future<void> deletePost(String uid, String photoUrl) async {
     isDeleting = true;
     notifyListeners();

@@ -134,12 +134,15 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                                     photoUrl: imgPath ?? '',
                                     createdAt: DateTime.now(),
                                     createdByUid: user.uid,
+                                    likedByUid: []
                                   );
                                   if (widget.postModel != null) {
                                     postModel.uid = widget.postModel!.uid;
                                     postModel.createdAt=widget.postModel!.createdAt;
                                     postModel.photoUrl =
                                         widget.postModel!.photoUrl;
+                                    postModel.likedByUid =
+                                        widget.postModel!.likedByUid;
 
                                     await context
                                         .read<PostProvider>()
