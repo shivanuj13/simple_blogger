@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
+import '../widget/custom_search_delegate.dart';
 import '../widget/post_snippet_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,6 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate());
+            },
+            icon: const Icon(Icons.search),
+          ),
           Hero(
             tag: 'profile',
             child: IconButton(
@@ -133,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               if (value.isLoading) const LinearProgressIndicator(),
-            ].animate(interval: 100.ms).fadeIn().moveY(begin: 4.h),
+            ],
           );
         }),
       ),

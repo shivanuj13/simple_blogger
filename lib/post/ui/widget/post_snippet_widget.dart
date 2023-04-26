@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -39,7 +40,7 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
         child: Card(
           borderOnForeground: false,
           color: Theme.of(context).colorScheme.background,
-          elevation: 1,
+          elevation: 8,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -99,6 +100,9 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
           ),
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(delay: 50.milliseconds)
+        .moveY(delay: 50.milliseconds, begin: 4.h);
   }
 }

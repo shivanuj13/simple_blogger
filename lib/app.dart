@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: ResponsiveSizer(builder: (context, orientation, screenType) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           initialRoute: SharedPref.instance.route,
           onGenerateRoute: RouteGenerator.generateRoute,
           theme: ThemeData(
