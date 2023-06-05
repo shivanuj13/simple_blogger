@@ -30,7 +30,8 @@ class _SignInScreenState extends State<SignInScreen> {
           .read<AuthProvider>()
           .signIn(_emailController.text, _passwordController.text);
       if (mounted) {
-        Navigator.pushReplacementNamed(context, RouteConst.home);
+        //todo: change to push replacement after dev
+        Navigator.pushNamed(context, RouteConst.home);
       }
     } on Exception catch (e) {
       ScaffoldMessenger.of(context)

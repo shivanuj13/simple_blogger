@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<PostProvider>().readPost();
+      context.read<PostProvider>().readPost(context);
     });
   }
 
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await context.read<PostProvider>().readPost();
+          await context.read<PostProvider>().readPost(context);
         },
         child: Consumer<PostProvider>(builder: (context, value, wid) {
           return Stack(

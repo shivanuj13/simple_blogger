@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
 
-import '../../auth/repo/auth_repo.dart';
+// import '../../auth/repo/auth_repo.dart';
+import '../../auth/provider/auth_provider.dart';
 import '../model/post_model.dart';
 import '../repo/post_repo.dart';
 
@@ -14,31 +16,20 @@ class PostProvider extends ChangeNotifier {
   bool isUpLoading = false;
   bool isDeleting = false;
   final PostRepo _postRepo = PostRepo();
-  final AuthRepo _authRepo = AuthRepo();
+  // final AuthRepo _authRepo = AuthRepo();
 
   void selectPost(int index) {
     selectedIndex = index;
     notifyListeners();
   }
 
-  UserModel? getUser(String uid) {
-    return userList.firstWhere((element) => element.id == uid, orElse: () {
-      return UserModel(
-        id: '',
-        name: '',
-        email: '',
-        photoUrl: '',
-        createdAt: DateTime.now(),
-      );
-    });
-  }
-
-  Future<void> createPost(PostModel postModel) async {
+  Future<void> createPost(PostModel postModel, BuildContext context) async {
     isUpLoading = true;
     notifyListeners();
     try {
-      await _postRepo.createPost(postModel);
-      readPost();
+      String token = context.read<AuthProvider>().currentUser?.token ?? "";
+      await _postRepo.createPost(postModel, token);
+      readPost(context);
       isUpLoading = false;
       notifyListeners();
     } on Exception {
@@ -48,13 +39,13 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> readPost() async {
-    String uId = "uid";
+  Future<void> readPost(BuildContext context) async {
+    String uId = context.read<AuthProvider>().currentUser!.id;
+    String token = context.read<AuthProvider>().currentUser?.token ?? "";
     isLoading = true;
     notifyListeners();
     try {
-      postList = await _postRepo.readPost();
-      userList = await _authRepo.fetchUsers();
+      postList = await _postRepo.readPost(token);
       isLoading = false;
       myPostList =
           postList.where((element) => element.createdByUid == uId).toList();
@@ -66,12 +57,14 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updatePost(PostModel postModel, String? imgPath) async {
+//todo
+  Future<void> updatePost(PostModel postModel, String? imgPath,BuildContext context) async {
     isUpLoading = true;
+    String token = context.read<AuthProvider>().currentUser?.token ?? '';
     notifyListeners();
     try {
-      await _postRepo.updatePost(postModel, imgPath);
-      readPost();
+      await _postRepo.updatePost(postModel, imgPath,token);
+      readPost(context);
       isUpLoading = false;
       notifyListeners();
     } on Exception {
@@ -81,34 +74,27 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> likePost() async {
+  Future<void> likeUnlikePost(BuildContext context) async {
     String postId = postList.elementAt(selectedIndex!).id;
-    String uid = "uid";
+    String token = context.read<AuthProvider>().currentUser?.token ?? '';
     try {
-      await _postRepo.likePost(postId, uid);
-      readPost();
+      await _postRepo.likeUnlikePost(postId, token);
+      readPost(context);
     } on Exception {
       rethrow;
     }
   }
 
-  Future<void> unlikePost() async {
-    String postId = postList.elementAt(selectedIndex!).id;
-    String uid = "id";
-    try {
-      await _postRepo.unlikePost(postId, uid);
-      readPost();
-    } on Exception {
-      rethrow;
-    }
-  }
 
-  Future<void> deletePost(String uid, String photoUrl) async {
+  Future<void> deletePost(
+      String postId, String photoUrl, BuildContext context) async {
     isDeleting = true;
+    String token = context.read<AuthProvider>().currentUser?.token ?? "";
+    print(postId);
     notifyListeners();
     try {
-      await _postRepo.deletePost(uid, photoUrl);
-      readPost();
+      await _postRepo.deletePost(postId, photoUrl, token);
+      readPost(context);
       isDeleting = false;
       notifyListeners();
     } on Exception {

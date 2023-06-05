@@ -5,13 +5,14 @@ import 'package:simple_blog/auth/repo/auth_repo.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthRepo _authRepo = AuthRepo();
   UserModel? userModel;
+  UserModel? currentUser;
   bool isLoading = false;
 
-  Future<void> insertUser(UserModel userModel, String password) async {
+  Future<void> insertUser(UserModel userModel) async {
     isLoading = true;
     notifyListeners();
     try {
-      await _authRepo.signUp(userModel, password);
+      currentUser = await _authRepo.signUp(userModel);
       isLoading = false;
       notifyListeners();
     } on Exception {
@@ -25,7 +26,7 @@ class AuthProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-      await _authRepo.signIn(email, password);
+      currentUser = await _authRepo.signIn(email, password);
       isLoading = false;
       notifyListeners();
     } on Exception {
@@ -47,7 +48,7 @@ class AuthProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-      await _authRepo.updateUser(name, imgPath);
+      await _authRepo.updateUser(name, imgPath, currentUser!.token);
       isLoading = false;
       notifyListeners();
     } on Exception {

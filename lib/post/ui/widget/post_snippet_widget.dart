@@ -57,6 +57,13 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
                           height: 20.h,
                           width: 100.w,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, obj, stack) {
+                            return SizedBox(
+                                width: 100.w,
+                                height: 20.h,
+                                child: Center(
+                                    child: Icon(Icons.photo, size: 20.w)));
+                          },
                         ),
                       ),
                       Container(

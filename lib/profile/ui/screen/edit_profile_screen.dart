@@ -22,12 +22,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   @override
   void initState() {
-    // if (FirebaseAuth.instance.currentUser!.displayName != null) {
-    //   _nameController.text = FirebaseAuth.instance.currentUser!.displayName!;
-    // }
-    // if (FirebaseAuth.instance.currentUser!.photoURL != null) {
-    //   imgPathNetwork = FirebaseAuth.instance.currentUser!.photoURL;
-    // }
+    final currentUser = context.read<AuthProvider>().currentUser;
+    if (currentUser != null) {
+      _nameController.text = currentUser.name;
+    }
     super.initState();
   }
 

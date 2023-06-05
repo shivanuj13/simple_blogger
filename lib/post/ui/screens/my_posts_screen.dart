@@ -30,7 +30,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await context.read<PostProvider>().readPost();
+          await context.read<PostProvider>().readPost(context);
         },
         child: Consumer<PostProvider>(builder: (context, value, wid) {
           return Stack(

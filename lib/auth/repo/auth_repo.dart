@@ -1,46 +1,52 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:simple_blog/auth/model/user_model.dart';
+import 'package:http/http.dart' as http;
+import '../../shared/const/url_const.dart';
 
 class AuthRepo {
-  dynamic _fireStore;
-  Future<List<UserModel>> fetchUsers() async {
-    List<UserModel> userList = [];
-    await _fireStore.collection('users').get().then((snapshot) {
-      for (var doc in snapshot.docs) {
-        userList.add(UserModel.fromMap(doc.data()));
+  String apiPath = "$baseUrl/users";
+  Map<String, String> headersList = {
+    'Accept': '*/*',
+    'User-Agent': 'Simple Blogging Android App',
+    'Content-Type': 'application/json'
+  };
+  // Future<List<UserModel>> fetchUsers() async {
+  //   List<UserModel> userList = [];
+  //   await _fireStore.collection('users').get().then((snapshot) {
+  //     for (var doc in snapshot.docs) {
+  //       userList.add(UserModel.fromMap(doc.data()));
+  //     }
+  //   });
+  //   return userList;
+  // }
+
+  Future<UserModel> signUp(UserModel userModel) async {
+    try {
+      Uri path = Uri.parse("$apiPath/signUp");
+      http.Response response = await http.post(
+        path,
+        headers: headersList,
+        body: userModel.toJson(),
+      );
+
+      Map<String, dynamic> res = jsonDecode(response.body);
+
+      if (res["status"]) {
+        UserModel userModel = UserModel.fromMap(res["data"]["user"]);
+        userModel.token = res["data"]["token"];
+
+        print(userModel);
+        return userModel;
+      } else {
+        throw http.ClientException(res["error"]);
       }
-    });
-    return userList;
+    } on Exception {
+      rethrow;
+    }
   }
 
-  Future<void> signUp(UserModel userModel, String password) async {
-    // try {
-    //   dynamic userCredential =
-    //       await _auth.createUserWithEmailAndPassword(
-    //     email: userModel.email,
-    //     password: password,
-    //   );
-    //   await userCredential.user!.updateDisplayName(userModel.name);
-    //   userModel.id = userCredential.user!.uid;
-    //   await insertUser(userModel);
-    //   return userCredential.user;
-    // } on FirebaseAuthException {
-    //   rethrow;
-    // }
-  }
-
-  Future<void> insertUser(UserModel userModel) async {
-    // try {
-    //   userModel.photoUrl = await uploadImage(userModel.photoUrl);
-    //   await _auth.currentUser!.updatePhotoURL(userModel.photoUrl);
-    //   await _fireStore.collection('users').add(userModel.toMap());
-    // } on FirebaseException {
-    //   rethrow;
-    // }
-  }
-
-  Future<void> updateUser(String name, String? imgPath) async {
+  Future<void> updateUser(String name, String? imgPath, String token) async {
     // String photoUrl = _auth.currentUser!.photoURL ?? "";
     try {
       //   if (imgPath != null) {
@@ -48,16 +54,19 @@ class AuthRepo {
       //     photoUrl = await uploadImage(imgPath);
       //     _auth.currentUser!.updatePhotoURL(photoUrl);
       //   }
-      //   _auth.currentUser!.updateDisplayName(name);
-      //   DocumentReference documentReference = await _fireStore
-      //       .collection('users')
-      //       .where('id', isEqualTo: _auth.currentUser!.uid)
-      //       .get()
-      //       .then((value) => value.docs.first.reference);
-      //   await documentReference.update({
-      //     'name': name,
-      //     'photoUrl': photoUrl,
-      //   });
+      headersList['Authorization'] = "Bearer $token";
+      Uri url = Uri.parse("$apiPath/update");
+      http.Response response = await http.post(
+        url,
+        headers: headersList,
+        body: jsonEncode({
+          "name": name,
+        }),
+      );
+      Map<String, dynamic> res = jsonDecode(response.body);
+      if (!res["status"]) {
+        throw http.ClientException(res["error"]);
+      }
     } on Exception {
       rethrow;
     }
@@ -85,13 +94,28 @@ class AuthRepo {
     }
   }
 
-  Future<void> signIn(String email, String password) async {
+  Future<UserModel> signIn(String email, String password) async {
     try {
-      // UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      //   email: email,
-      //   password: password,
-      // );
-      // return userCredential.user;
+      Uri path = Uri.parse("$apiPath/signIn");
+      http.Response response = await http.post(
+        path,
+        headers: headersList,
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+        }),
+      );
+      // check if got the user
+
+      Map<String, dynamic> res = jsonDecode(response.body);
+      if (res["status"]) {
+        UserModel userModel = UserModel.fromMap(res["data"]["user"]);
+        userModel.token = res["data"]["token"];
+
+        return userModel;
+      } else {
+        throw http.ClientException(res["error"]);
+      }
     } on Exception {
       rethrow;
     }

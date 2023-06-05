@@ -112,14 +112,14 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                               if (!formKey.currentState!.validate()) {
                                 return;
                               }
-                              if (imgPath == null && widget.postModel == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please select an image'),
-                                  ),
-                                );
-                                return;
-                              }
+                              // if (imgPath == null && widget.postModel == null) {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //     const SnackBar(
+                              //       content: Text('Please select an image'),
+                              //     ),
+                              //   );
+                              //   return;
+                              // }
                               try {
                                 // User user = FirebaseAuth.instance.currentUser!;
                                 PostModel postModel = PostModel(
@@ -127,6 +127,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                                     title: _titleController.text,
                                     content: _contentController.text,
                                     photoUrl: imgPath ?? '',
+                                    author: '',
                                     createdAt: DateTime.now(),
                                     createdByUid: "user.uid",
                                     likedByUid: []);
@@ -141,10 +142,11 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
 
                                   await context
                                       .read<PostProvider>()
-                                      .updatePost(postModel, imgPath);
+                                      .updatePost(postModel, imgPath, context);
                                 } else {
                                   await context.read<PostProvider>().createPost(
                                         postModel,
+                                        context,
                                       );
                                 }
                                 if (mounted) {

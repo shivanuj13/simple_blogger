@@ -88,24 +88,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         : ElevatedButton(
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                if (imgPath == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('Please select an image')));
-                                  return;
-                                }
+                                // if (imgPath == null) {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //       const SnackBar(
+                                //           content:
+                                //               Text('Please select an image')));
+                                //   return;
+                                // }
                                 try {
                                   await value.insertUser(
-                                      UserModel(
-                                          id: '',
-                                          name: _nameController.text,
-                                          email: _emailController.text,
-                                          photoUrl: imgPath ?? '',
-                                          createdAt: DateTime.now()),
-                                      _passwordController.text);
+                                    UserModel(
+                                        id: '',
+                                        name: _nameController.text,
+                                        email: _emailController.text,
+                                        password: _passwordController.text,
+                                        photoUrl: imgPath ?? '',
+                                        createdAt: DateTime.now()),
+                                  );
                                   if (mounted) {
-                                    Navigator.pushReplacementNamed(
+                                    //todo: change it to pushReplacement after dev
+                                    Navigator.pushNamed(
                                         context, RouteConst.home);
                                   }
                                 } on Exception catch (e) {

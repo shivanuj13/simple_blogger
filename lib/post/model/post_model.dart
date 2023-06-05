@@ -7,6 +7,7 @@ class PostModel {
   String photoUrl;
   DateTime createdAt;
   String createdByUid;
+  String author;
   List<String> likedByUid;
 
   PostModel({
@@ -16,29 +17,28 @@ class PostModel {
     required this.photoUrl,
     required this.createdAt,
     required this.createdByUid,
+    required this.author,
     required this.likedByUid,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'uid': id,
+      'id': id,
       'title': title,
       'content': content,
       'photoUrl': photoUrl,
-      'createdAt': createdAt.toIso8601String(),
-      'createdByUid': createdByUid,
-      'likedByUid': likedByUid,
     };
   }
 
   factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
-      id: map['uid'] ?? '',
+      id: map['id'] ?? '',
       title: map['title'] ?? '',
       content: map['content'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
       createdAt: DateTime.parse(map['createdAt']),
       createdByUid: map['createdByUid'] ?? '',
+      author: map['author'] ?? '',
       likedByUid: List<String>.from(map['likedByUid']),
     );
   }
@@ -50,6 +50,6 @@ class PostModel {
 
   @override
   String toString() {
-    return 'PostModel(uid: $id, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid, likedByUid: $likedByUid)';
+    return 'PostModel(id: $id, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid, author: $author, likedByUid: $likedByUid)';
   }
 }

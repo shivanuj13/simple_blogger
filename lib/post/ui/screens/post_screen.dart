@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/model/post_model.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 
@@ -23,13 +24,14 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen>
     with SingleTickerProviderStateMixin {
-  String uid = "uid";
+  late String uid;
   final ScrollController _scrollController = ScrollController();
   double _scrollPosition = 0;
   late final AnimationController _animationController;
 
   @override
   void initState() {
+    uid = context.read<AuthProvider>().currentUser!.id;
     _scrollController.addListener(() {
       setState(() {
         _scrollPosition = _scrollController.position.pixels;
@@ -89,10 +91,12 @@ class _PostScreenState extends State<PostScreen>
                       : () async {
                           try {
                             await context.read<PostProvider>().deletePost(
-                                postList.elementAt(value.selectedIndex!).id,
-                                postList
-                                    .elementAt(value.selectedIndex!)
-                                    .photoUrl);
+                                  postList.elementAt(value.selectedIndex!).id,
+                                  postList
+                                      .elementAt(value.selectedIndex!)
+                                      .photoUrl,
+                                  context,
+                                );
                             if (mounted) {
                               Navigator.pop(context);
                             }
@@ -121,10 +125,17 @@ class _PostScreenState extends State<PostScreen>
               Stack(
                 children: [
                   Image.network(
-                      postList.elementAt(value.selectedIndex!).photoUrl,
-                      height: 34.h,
-                      width: 100.w,
-                      fit: BoxFit.cover),
+                    postList.elementAt(value.selectedIndex!).photoUrl,
+                    height: 34.h,
+                    width: 100.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, obj, stack) {
+                      return SizedBox(
+                          width: 100.w,
+                          height: 20.h,
+                          child: Center(child: Icon(Icons.photo, size: 20.w)));
+                    },
+                  ),
                   Container(
                     color: Colors.black.withOpacity(0.4),
                     height: 34.h,
@@ -147,6 +158,13 @@ class _PostScreenState extends State<PostScreen>
                           height: 30.h,
                           width: 80.w,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, obj, stack) {
+                            return SizedBox(
+                                width: 100.w,
+                                height: 20.h,
+                                child: Center(
+                                    child: Icon(Icons.photo, size: 20.w)));
+                          },
                         ),
                       ),
                     ),
@@ -185,7 +203,7 @@ class _PostScreenState extends State<PostScreen>
                             height: 4.h,
                           ),
                           Text(
-                            '\u{270E}   ${value.getUser(postList.elementAt(value.selectedIndex!).createdByUid)?.name}',
+                            '\u{270E}   ${value.postList.elementAt(value.selectedIndex!).author}',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 16.sp,
@@ -200,11 +218,9 @@ class _PostScreenState extends State<PostScreen>
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  if (isLiked) {
-                                    context.read<PostProvider>().unlikePost();
-                                  } else {
-                                    context.read<PostProvider>().likePost();
-                                  }
+                                  context
+                                      .read<PostProvider>()
+                                      .likeUnlikePost(context);
                                 },
                                 icon: Icon(
                                   isLiked
