@@ -45,6 +45,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
     _contentController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +66,7 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                           builder: (context) =>
                               PickImageBottomSheet(onImageSelected: (source) {
                                 ImagePicker()
-                                    .pickImage(source: source)
+                                    .pickImage(source: source, imageQuality: 20)
                                     .then((value) {
                                   setState(() {
                                     imgPath = value?.path;
@@ -108,67 +109,60 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                   Consumer<PostProvider>(builder: (context, value, wid) {
                     return value.isUpLoading
                         ? const RefreshProgressIndicator()
-                        : Hero(
-                            tag: 'post',
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                if (!formKey.currentState!.validate()) {
-                                  return;
-                                }
-                                if (imgPath == null &&
-                                    widget.postModel == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Please select an image'),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                try {
-                                  User user =
-                                      FirebaseAuth.instance.currentUser!;
-                                  PostModel postModel = PostModel(
-                                    uid: '',
+                        : ElevatedButton(
+                            onPressed: () async {
+                              if (!formKey.currentState!.validate()) {
+                                return;
+                              }
+                              if (imgPath == null && widget.postModel == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please select an image'),
+                                  ),
+                                );
+                                return;
+                              }
+                              try {
+                                User user = FirebaseAuth.instance.currentUser!;
+                                PostModel postModel = PostModel(
+                                    id: '',
                                     title: _titleController.text,
                                     content: _contentController.text,
                                     photoUrl: imgPath ?? '',
                                     createdAt: DateTime.now(),
                                     createdByUid: user.uid,
-                                    likedByUid: []
-                                  );
-                                  if (widget.postModel != null) {
-                                    postModel.uid = widget.postModel!.uid;
-                                    postModel.createdAt=widget.postModel!.createdAt;
-                                    postModel.photoUrl =
-                                        widget.postModel!.photoUrl;
-                                    postModel.likedByUid =
-                                        widget.postModel!.likedByUid;
+                                    likedByUid: []);
+                                if (widget.postModel != null) {
+                                  postModel.id = widget.postModel!.id;
+                                  postModel.createdAt =
+                                      widget.postModel!.createdAt;
+                                  postModel.photoUrl =
+                                      widget.postModel!.photoUrl;
+                                  postModel.likedByUid =
+                                      widget.postModel!.likedByUid;
 
-                                    await context
-                                        .read<PostProvider>()
-                                        .updatePost(postModel, imgPath);
-                                  } else {
-                                    await context
-                                        .read<PostProvider>()
-                                        .createPost(
-                                          postModel,
-                                        );
-                                  }
-                                  if(mounted) {
-                                    Navigator.pop(context);
-                                  }
-                                } on FirebaseException catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(e.message!),
-                                    ),
-                                  );
+                                  await context
+                                      .read<PostProvider>()
+                                      .updatePost(postModel, imgPath);
+                                } else {
+                                  await context.read<PostProvider>().createPost(
+                                        postModel,
+                                      );
                                 }
-                              },
-                              child: Text(widget.postModel != null
-                                  ? 'Update Post'
-                                  : 'Create Post'),
-                            ),
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              } on FirebaseException catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.message!),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(widget.postModel != null
+                                ? 'Update Post'
+                                : 'Create Post'),
                           );
                   })
                 ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),

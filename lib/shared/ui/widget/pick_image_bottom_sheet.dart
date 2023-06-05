@@ -19,7 +19,7 @@ class PickImageBottomSheet extends StatelessWidget {
                 onImageSelected(ImageSource.camera);
                 Navigator.pop(context);
               },
-              icon: Column(mainAxisSize: MainAxisSize.min, children: const [
+              icon: const Column(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.camera_alt),
                 Text('Camera'),
               ])),
@@ -29,7 +29,7 @@ class PickImageBottomSheet extends StatelessWidget {
                 onImageSelected(ImageSource.gallery);
                 Navigator.pop(context);
               },
-              icon: Column(mainAxisSize: MainAxisSize.min, children: const [
+              icon: const Column(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.image),
                 Text('Gallery'),
               ])),

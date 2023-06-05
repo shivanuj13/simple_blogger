@@ -28,7 +28,7 @@ class AuthRepo {
         password: password,
       );
       await userCredential.user!.updateDisplayName(userModel.name);
-      userModel.uid = userCredential.user!.uid;
+      userModel.id = userCredential.user!.uid;
       await insertUser(userModel);
       return userCredential.user;
     } on FirebaseAuthException {

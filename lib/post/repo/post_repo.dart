@@ -43,7 +43,7 @@ class PostRepo {
       }
       await _fireStore
           .collection('posts')
-          .doc(postModel.uid)
+          .doc(postModel.id)
           .update(postModel.toMap());
     } on FirebaseException {
       rethrow;

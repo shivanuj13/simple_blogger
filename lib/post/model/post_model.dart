@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 class PostModel {
-  String uid;
+  String id;
   String title;
   String content;
   String photoUrl;
   DateTime createdAt;
   String createdByUid;
   List<String> likedByUid;
-  
+
   PostModel({
-    required this.uid,
+    required this.id,
     required this.title,
     required this.content,
     required this.photoUrl,
@@ -19,15 +19,13 @@ class PostModel {
     required this.likedByUid,
   });
 
-
-
   Map<String, dynamic> toMap() {
     return {
-      'uid': uid,
+      'uid': id,
       'title': title,
       'content': content,
       'photoUrl': photoUrl,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
       'createdByUid': createdByUid,
       'likedByUid': likedByUid,
     };
@@ -35,11 +33,11 @@ class PostModel {
 
   factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
-      uid: map['uid'] ?? '',
+      id: map['uid'] ?? '',
       title: map['title'] ?? '',
       content: map['content'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      createdAt: DateTime.parse(map['createdAt']),
       createdByUid: map['createdByUid'] ?? '',
       likedByUid: List<String>.from(map['likedByUid']),
     );
@@ -47,10 +45,11 @@ class PostModel {
 
   String toJson() => json.encode(toMap());
 
-  factory PostModel.fromJson(String source) => PostModel.fromMap(json.decode(source));
+  factory PostModel.fromJson(String source) =>
+      PostModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'PostModel(uid: $uid, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid, likedByUid: $likedByUid)';
+    return 'PostModel(uid: $id, title: $title, content: $content, photoUrl: $photoUrl, createdAt: $createdAt, createdByUid: $createdByUid, likedByUid: $likedByUid)';
   }
 }

@@ -1,36 +1,36 @@
 import 'dart:convert';
 
 class UserModel {
-  String uid;
+  String id;
   String name;
   String email;
   String photoUrl;
-  DateTime joinedAt;
+  DateTime createdAt;
   UserModel({
-    required this.uid,
+    required this.id,
     required this.name,
     required this.email,
     required this.photoUrl,
-    required this.joinedAt,
+    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id': uid,
+      'id': id,
       'name': name,
       'email': email,
       'photoUrl': photoUrl,
-      'joinedAt': joinedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      uid: map['id'] ?? '',
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
-      joinedAt: DateTime.fromMillisecondsSinceEpoch(map['joinedAt']),
+      createdAt: DateTime.parse(map['createdAt']),
     );
   }
 
@@ -41,6 +41,6 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $uid, name: $name, email: $email, photoUrl: $photoUrl, joinedAt: $joinedAt)';
+    return 'UserModel(id: $id, name: $name, email: $email, photoUrl: $photoUrl, createdAt: $createdAt)';
   }
 }

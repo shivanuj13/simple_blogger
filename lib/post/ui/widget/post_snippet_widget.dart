@@ -51,7 +51,7 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
                     alignment: Alignment.topRight,
                     children: [
                       Hero(
-                        tag: widget.postModel.uid,
+                        tag: widget.postModel.id,
                         child: Image.network(
                           widget.postModel.photoUrl,
                           height: 20.h,

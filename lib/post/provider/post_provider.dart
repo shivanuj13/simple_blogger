@@ -23,13 +23,13 @@ class PostProvider extends ChangeNotifier {
   }
 
   UserModel? getUser(String uid) {
-    return userList.firstWhere((element) => element.uid == uid, orElse: () {
+    return userList.firstWhere((element) => element.id == uid, orElse: () {
       return UserModel(
-        uid: '',
+        id: '',
         name: '',
         email: '',
         photoUrl: '',
-        joinedAt: DateTime.now(),
+        createdAt: DateTime.now(),
       );
     });
   }
@@ -83,7 +83,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<void> likePost() async {
-    String postId = postList.elementAt(selectedIndex!).uid;
+    String postId = postList.elementAt(selectedIndex!).id;
     String uid = FirebaseAuth.instance.currentUser!.uid;
     try {
       await _postRepo.likePost(postId, uid);
@@ -94,7 +94,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<void> unlikePost() async {
-    String postId = postList.elementAt(selectedIndex!).uid;
+    String postId = postList.elementAt(selectedIndex!).id;
     String uid = FirebaseAuth.instance.currentUser!.uid;
     try {
       await _postRepo.unlikePost(postId, uid);

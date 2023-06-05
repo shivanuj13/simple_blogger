@@ -57,7 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         builder: (context) =>
                             PickImageBottomSheet(onImageSelected: (source) {
                               ImagePicker()
-                                  .pickImage(source: source)
+                                  .pickImage(source: source, imageQuality: 20)
                                   .then((value) {
                                 setState(() {
                                   imgPathLocal = value?.path;
@@ -93,10 +93,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           await context
                               .read<AuthProvider>()
                               .updateUser(_nameController.text, imgPathLocal);
-                          if(mounted) {
+                          if (mounted) {
                             Navigator.pop(context);
                           }
-                          if(mounted) {
+                          if (mounted) {
                             Navigator.pop(context);
                           }
                         },

@@ -58,7 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           builder: (context) =>
                               PickImageBottomSheet(onImageSelected: (source) {
                                 ImagePicker()
-                                    .pickImage(source: source)
+                                    .pickImage(source: source, imageQuality: 20)
                                     .then((value) {
                                   setState(() {
                                     imgPath = value?.path;
@@ -100,11 +100,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 try {
                                   await value.insertUser(
                                       UserModel(
-                                          uid: '',
+                                          id: '',
                                           name: _nameController.text,
                                           email: _emailController.text,
                                           photoUrl: imgPath ?? '',
-                                          joinedAt: DateTime.now()),
+                                          createdAt: DateTime.now()),
                                       _passwordController.text);
                                   if (mounted) {
                                     Navigator.pushReplacementNamed(

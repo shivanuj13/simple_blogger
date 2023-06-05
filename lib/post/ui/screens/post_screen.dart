@@ -90,7 +90,7 @@ class _PostScreenState extends State<PostScreen>
                       : () async {
                           try {
                             await context.read<PostProvider>().deletePost(
-                                postList.elementAt(value.selectedIndex!).uid,
+                                postList.elementAt(value.selectedIndex!).id,
                                 postList
                                     .elementAt(value.selectedIndex!)
                                     .photoUrl);
@@ -140,7 +140,7 @@ class _PostScreenState extends State<PostScreen>
                       height: 22.h,
                     ),
                     Hero(
-                      tag: postList.elementAt(value.selectedIndex!).uid,
+                      tag: postList.elementAt(value.selectedIndex!).id,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
@@ -201,9 +201,9 @@ class _PostScreenState extends State<PostScreen>
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  if(isLiked){
+                                  if (isLiked) {
                                     context.read<PostProvider>().unlikePost();
-                                  }else{
+                                  } else {
                                     context.read<PostProvider>().likePost();
                                   }
                                 },
