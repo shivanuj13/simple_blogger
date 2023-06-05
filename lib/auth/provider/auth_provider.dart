@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
 import 'package:simple_blog/auth/repo/auth_repo.dart';
@@ -15,7 +14,7 @@ class AuthProvider extends ChangeNotifier {
       await _authRepo.signUp(userModel, password);
       isLoading = false;
       notifyListeners();
-    } on FirebaseAuthException {
+    } on Exception {
       isLoading = false;
       notifyListeners();
       rethrow;
@@ -29,7 +28,7 @@ class AuthProvider extends ChangeNotifier {
       await _authRepo.signIn(email, password);
       isLoading = false;
       notifyListeners();
-    } on FirebaseAuthException {
+    } on Exception {
       isLoading = false;
       notifyListeners();
       rethrow;
@@ -51,7 +50,7 @@ class AuthProvider extends ChangeNotifier {
       await _authRepo.updateUser(name, imgPath);
       isLoading = false;
       notifyListeners();
-    } on FirebaseException {
+    } on Exception {
       isLoading = false;
       notifyListeners();
       rethrow;

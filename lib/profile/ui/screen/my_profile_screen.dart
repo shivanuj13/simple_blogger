@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -44,10 +44,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   elevation: 8,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(22.sp),
-                    child: FirebaseAuth.instance.currentUser?.photoURL == null
-                        ? Icon(Icons.person, size: 22.w)
-                        : Image.network(
-                            FirebaseAuth.instance.currentUser!.photoURL!,
+                    // child: FirebaseAuth.instance.currentUser?.photoURL == null
+                    //     ? Icon(Icons.person, size: 22.w):
+                      child:   Image.network(
+                           " FirebaseAuth.instance.currentUser!.photoURL!",
                             width: 22.w,
                             height: 22.w,
                             fit: BoxFit.cover,
@@ -59,7 +59,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ),
           SizedBox(height: 2.h),
           Text(
-            FirebaseAuth.instance.currentUser?.displayName ?? 'Name',
+          "  FirebaseAuth.instance.currentUser?.displayName ?? 'Name'",
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,

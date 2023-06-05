@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +32,9 @@ class _SignInScreenState extends State<SignInScreen> {
       if (mounted) {
         Navigator.pushReplacementNamed(context, RouteConst.home);
       }
-    } on FirebaseAuthException catch (e) {
+    } on Exception catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message!)));
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 

@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../auth/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,14 +10,14 @@ class SharedPref {
   String route = RouteConst.signIn;
 
   Future<void> initialAuthHandler() async {
-    String route;
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      route = RouteConst.home;
-    } else {
-      route = RouteConst.signIn;
-    }
-    this.route = route;
+    // String route;
+    // User? user = FirebaseAuth.instance.currentUser;
+    // if (user != null) {
+    //   route = RouteConst.home;
+    // } else {
+    //   route = RouteConst.signIn;
+    // }
+    route = RouteConst.signIn;
   }
 
   Future<void> setUser(UserModel userModel) async {

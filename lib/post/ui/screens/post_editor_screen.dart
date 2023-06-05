@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
@@ -123,14 +121,14 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                                 return;
                               }
                               try {
-                                User user = FirebaseAuth.instance.currentUser!;
+                                // User user = FirebaseAuth.instance.currentUser!;
                                 PostModel postModel = PostModel(
                                     id: '',
                                     title: _titleController.text,
                                     content: _contentController.text,
                                     photoUrl: imgPath ?? '',
                                     createdAt: DateTime.now(),
-                                    createdByUid: user.uid,
+                                    createdByUid: "user.uid",
                                     likedByUid: []);
                                 if (widget.postModel != null) {
                                   postModel.id = widget.postModel!.id;
@@ -152,10 +150,10 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                                 if (mounted) {
                                   Navigator.pop(context);
                                 }
-                              } on FirebaseException catch (e) {
+                              } on Exception catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(e.message!),
+                                    content: Text(e.toString()),
                                   ),
                                 );
                               }

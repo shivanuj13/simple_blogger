@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,9 +108,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Navigator.pushReplacementNamed(
                                         context, RouteConst.home);
                                   }
-                                } on FirebaseAuthException catch (e) {
+                                } on Exception catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(e.message ?? '')));
+                                      SnackBar(content: Text(e.toString())));
                                 }
                               }
                             },

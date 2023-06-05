@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
 
@@ -42,7 +41,7 @@ class PostProvider extends ChangeNotifier {
       readPost();
       isUpLoading = false;
       notifyListeners();
-    } on FirebaseException {
+    } on Exception {
       isUpLoading = false;
       notifyListeners();
       rethrow;
@@ -50,7 +49,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<void> readPost() async {
-    String uId = FirebaseAuth.instance.currentUser!.uid;
+    String uId = "uid";
     isLoading = true;
     notifyListeners();
     try {
@@ -60,7 +59,7 @@ class PostProvider extends ChangeNotifier {
       myPostList =
           postList.where((element) => element.createdByUid == uId).toList();
       notifyListeners();
-    } on FirebaseException {
+    } on Exception {
       isLoading = false;
       notifyListeners();
       rethrow;
@@ -75,7 +74,7 @@ class PostProvider extends ChangeNotifier {
       readPost();
       isUpLoading = false;
       notifyListeners();
-    } on FirebaseException {
+    } on Exception {
       isUpLoading = false;
       notifyListeners();
       rethrow;
@@ -84,22 +83,22 @@ class PostProvider extends ChangeNotifier {
 
   Future<void> likePost() async {
     String postId = postList.elementAt(selectedIndex!).id;
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String uid = "uid";
     try {
       await _postRepo.likePost(postId, uid);
       readPost();
-    } on FirebaseException {
+    } on Exception {
       rethrow;
     }
   }
 
   Future<void> unlikePost() async {
     String postId = postList.elementAt(selectedIndex!).id;
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String uid = "id";
     try {
       await _postRepo.unlikePost(postId, uid);
       readPost();
-    } on FirebaseException {
+    } on Exception {
       rethrow;
     }
   }
@@ -112,7 +111,7 @@ class PostProvider extends ChangeNotifier {
       readPost();
       isDeleting = false;
       notifyListeners();
-    } on FirebaseException {
+    } on Exception {
       isDeleting = false;
       notifyListeners();
       rethrow;

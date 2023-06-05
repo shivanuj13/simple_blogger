@@ -1,5 +1,4 @@
 import 'package:fadable_app_bar/fadable_app_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +23,7 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen>
     with SingleTickerProviderStateMixin {
-  String uid = FirebaseAuth.instance.currentUser!.uid;
+  String uid = "uid";
   final ScrollController _scrollController = ScrollController();
   double _scrollPosition = 0;
   late final AnimationController _animationController;
@@ -97,10 +96,10 @@ class _PostScreenState extends State<PostScreen>
                             if (mounted) {
                               Navigator.pop(context);
                             }
-                          } on FirebaseException catch (e) {
+                          } on Exception catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(e.message!),
+                                content: Text(e.toString()),
                               ),
                             );
                           }

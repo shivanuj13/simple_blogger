@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +22,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   @override
   void initState() {
-    if (FirebaseAuth.instance.currentUser!.displayName != null) {
-      _nameController.text = FirebaseAuth.instance.currentUser!.displayName!;
-    }
-    if (FirebaseAuth.instance.currentUser!.photoURL != null) {
-      imgPathNetwork = FirebaseAuth.instance.currentUser!.photoURL;
-    }
+    // if (FirebaseAuth.instance.currentUser!.displayName != null) {
+    //   _nameController.text = FirebaseAuth.instance.currentUser!.displayName!;
+    // }
+    // if (FirebaseAuth.instance.currentUser!.photoURL != null) {
+    //   imgPathNetwork = FirebaseAuth.instance.currentUser!.photoURL;
+    // }
     super.initState();
   }
 

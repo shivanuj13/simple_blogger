@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/shared/const/text_style_const.dart';
@@ -20,7 +19,7 @@ class AboutScreenState extends State<AboutScreen> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
         child: Text(
-          '''Welcome ${FirebaseAuth.instance.currentUser?.displayName},
+          '''Welcome User!,
 
 It a simple blog application where you can express your thoughts, share your experiences, and connect with others.
       
