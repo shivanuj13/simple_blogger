@@ -1,1 +1,1 @@
-const String baseUrl = "http://10.0.2.2:3000";
+const String baseUrl = "https://simpleblog-1-a8789157.deta.app";

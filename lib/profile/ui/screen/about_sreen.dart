@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/shared/const/text_style_const.dart';
+
+import '../../../auth/provider/auth_provider.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -12,6 +15,7 @@ class AboutScreen extends StatefulWidget {
 class AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
+    final userName = context.watch<AuthProvider>().currentUser?.name;
     return Scaffold(
       appBar: AppBar(
         title: const Text('About'),
@@ -19,7 +23,7 @@ class AboutScreenState extends State<AboutScreen> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
         child: Text(
-          '''Welcome User!,
+          '''Welcome $userName!,
 
 It a simple blog application where you can express your thoughts, share your experiences, and connect with others.
       

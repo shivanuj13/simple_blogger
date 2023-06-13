@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
+import 'package:simple_blog/auth/ui/widget/email_field_widget.dart';
 
 import '../../../auth/ui/widget/name_field_widget.dart';
 import '../../../shared/ui/widget/pick_image_bottom_sheet.dart';
@@ -20,11 +21,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String? imgPathLocal;
   String? imgPathNetwork;
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
   @override
   void initState() {
     final currentUser = context.read<AuthProvider>().currentUser;
     if (currentUser != null) {
       _nameController.text = currentUser.name;
+      _emailController.text = currentUser.email;
+      imgPathNetwork = currentUser.photoUrl;
     }
     super.initState();
   }
@@ -82,14 +87,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 SizedBox(height: 4.h),
                 NameFieldWidget(nameController: _nameController),
+                EmailFieldWidget(emailController: _emailController),
                 SizedBox(height: 1.h),
                 context.watch<AuthProvider>().isLoading
                     ? const RefreshProgressIndicator()
                     : ElevatedButton(
                         onPressed: () async {
-                          await context
-                              .read<AuthProvider>()
-                              .updateUser(_nameController.text, imgPathLocal);
+                          await context.read<AuthProvider>().updateUser(
+                                _nameController.text,
+                                _emailController.text,
+                                imgPathLocal,
+                                context,
+                              );
                           if (mounted) {
                             Navigator.pop(context);
                           }

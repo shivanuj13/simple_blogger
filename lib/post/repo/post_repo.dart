@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:simple_blog/post/model/post_model.dart';
@@ -16,10 +16,10 @@ class PostRepo {
     'Authorization': '',
   };
 
-  Future<void> createPost(PostModel postModel, String token) async {
+  Future<void> createPost(PostModel postModel, String token,Map<String,dynamic>secrets) async {
     try {
       //todo: implement image uploading
-      // postModel.photoUrl = await uploadImage(postModel.photoUrl);
+      postModel.photoUrl = await uploadImage(postModel.photoUrl,secrets);
       headersList['Authorization'] = "Bearer $token";
       Uri url = Uri.parse("$apiPath/create");
       http.Response response = await http.post(
@@ -51,11 +51,11 @@ class PostRepo {
       if (res["status"]) {
         List<dynamic> posts = res["data"]["posts"];
         for (var element in posts) {
-          log(PostModel.fromMap(element).toString());
+          // log(PostModel.fromMap(element).toString());
           postList.add(PostModel.fromMap(element));
         }
 
-        return postList;
+        return postList.reversed.toList();
       } else {
         throw http.ClientException(res["error"]);
       }
@@ -65,20 +65,19 @@ class PostRepo {
   }
 
   Future<void> updatePost(
-      PostModel postModel, String? imgPath, String token) async {
+      PostModel postModel, String? imgPath, String token,Map<String,dynamic>secrets) async {
     try {
-      // if (imgPath != null) {
-      //   deleteImage(postModel.photoUrl);
-      //   postModel.photoUrl = await uploadImage(imgPath);
-      // }
+      if (imgPath != null) {
+        // deleteImage(postModel.photoUrl);
+        postModel.photoUrl = await uploadImage(imgPath,secrets);
+      }
       headersList['Authorization'] = "Bearer $token";
       Uri url = Uri.parse("$apiPath/update");
-      http.Response response = await http.post(
+      await http.post(
         url,
         headers: headersList,
         body: postModel.toJson(),
       );
-      print(response.body);
     } on Exception {
       rethrow;
     }
@@ -104,7 +103,7 @@ class PostRepo {
     }
   }
 
-  Future<void> deletePost(String postId, String photoUrl, String token) async {
+  Future<void> deletePost(String postId, String token) async {
     try {
       // await deleteImage(photoUrl);
       headersList['Authorization'] = "Bearer $token";
@@ -121,15 +120,19 @@ class PostRepo {
     }
   }
 
-  Future<String> uploadImage(String path) async {
-    String fileName = path.split('/').last;
+  Future<String> uploadImage(String path, Map<String, dynamic> secrets) async {
     try {
-      // String url = await _storage
-      //     .ref()
-      //     .child('postImages/$fileName')
-      //     .putFile(File(path))
-      //     .then((p0) => p0.ref.getDownloadURL());
-      return fileName;
+      CloudinaryPublic cloudinaryPublic = CloudinaryPublic(
+        secrets["cloudName"]!,
+        secrets["uploadPreset"]!,
+        cache: true,
+      );
+
+      CloudinaryResponse response = await cloudinaryPublic.uploadFile(
+        CloudinaryFile.fromFile(path,
+            resourceType: CloudinaryResourceType.Image),
+      );
+      return response.secureUrl;
     } on Exception {
       rethrow;
     }

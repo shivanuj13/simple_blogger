@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import '../../shared/const/url_const.dart';
@@ -21,8 +22,10 @@ class AuthRepo {
   //   return userList;
   // }
 
-  Future<UserModel> signUp(UserModel userModel) async {
+  Future<UserModel> signUp(
+      UserModel userModel, Map<String, dynamic> secrets) async {
     try {
+      userModel.photoUrl = await uploadImage(userModel.photoUrl, secrets);
       Uri path = Uri.parse("$apiPath/signUp");
       http.Response response = await http.post(
         path,
@@ -36,7 +39,6 @@ class AuthRepo {
         UserModel userModel = UserModel.fromMap(res["data"]["user"]);
         userModel.token = res["data"]["token"];
 
-        print(userModel);
         return userModel;
       } else {
         throw http.ClientException(res["error"]);
@@ -46,53 +48,62 @@ class AuthRepo {
     }
   }
 
-  Future<void> updateUser(String name, String? imgPath, String token) async {
-    // String photoUrl = _auth.currentUser!.photoURL ?? "";
+  Future<UserModel> updateUser(String name, String email, String? imgPath,
+      String token, Map<String, dynamic> secrets) async {
+    Map<String, String> updatedUser = {
+      "name": name,
+      "email": email,
+    };
     try {
-      //   if (imgPath != null) {
-      //     await deleteImage(photoUrl);
-      //     photoUrl = await uploadImage(imgPath);
-      //     _auth.currentUser!.updatePhotoURL(photoUrl);
-      //   }
+      UserModel userModel;
+      if (imgPath != null) {
+        String photoUrl = await uploadImage(imgPath, secrets);
+        updatedUser["photoUrl"] = photoUrl;
+      }
       headersList['Authorization'] = "Bearer $token";
       Uri url = Uri.parse("$apiPath/update");
       http.Response response = await http.post(
         url,
         headers: headersList,
-        body: jsonEncode({
-          "name": name,
-        }),
+        body: jsonEncode(updatedUser),
       );
       Map<String, dynamic> res = jsonDecode(response.body);
       if (!res["status"]) {
         throw http.ClientException(res["error"]);
+      } else {
+        userModel = UserModel.fromMap(res["data"]["user"]);
+        return userModel;
       }
     } on Exception {
       rethrow;
     }
   }
 
-  Future<String> uploadImage(String path) async {
-    String fileName = path.split('/').last;
+  Future<String> uploadImage(String path, Map<String, dynamic> secrets) async {
     try {
-      // String url = await _storage
-      //     .ref()
-      //     .child('userImages/$fileName')
-      //     .putFile(File(path))
-      //     .then((p0) => p0.ref.getDownloadURL());
-      return fileName;
+      CloudinaryPublic cloudinaryPublic = CloudinaryPublic(
+        secrets["cloudName"]!,
+        secrets["uploadPreset"]!,
+        cache: true,
+      );
+
+      CloudinaryResponse response = await cloudinaryPublic.uploadFile(
+        CloudinaryFile.fromFile(path,
+            resourceType: CloudinaryResourceType.Image),
+      );
+      return response.secureUrl;
     } on Exception {
       rethrow;
     }
   }
 
-  Future<void> deleteImage(String url) async {
-    try {
-      // await _storage.refFromURL(url).delete();
-    } on Exception {
-      rethrow;
-    }
-  }
+  // Future<void> deleteImage(String url) async {
+  //   try {
+  //     // await _storage.refFromURL(url).delete();
+  //   } on Exception {
+  //     rethrow;
+  //   }
+  // }
 
   Future<UserModel> signIn(String email, String password) async {
     try {
@@ -121,7 +132,5 @@ class AuthRepo {
     }
   }
 
-  Future<void> signOut() async {
-    // await _auth.signOut();
-  }
+  Future<void> signOut() async {}
 }

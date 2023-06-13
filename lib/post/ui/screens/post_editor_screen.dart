@@ -112,14 +112,14 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                               if (!formKey.currentState!.validate()) {
                                 return;
                               }
-                              // if (imgPath == null && widget.postModel == null) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //     const SnackBar(
-                              //       content: Text('Please select an image'),
-                              //     ),
-                              //   );
-                              //   return;
-                              // }
+                              if (imgPath == null && widget.postModel == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please select an image'),
+                                  ),
+                                );
+                                return;
+                              }
                               try {
                                 // User user = FirebaseAuth.instance.currentUser!;
                                 PostModel postModel = PostModel(
@@ -129,8 +129,9 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                                     photoUrl: imgPath ?? '',
                                     author: '',
                                     createdAt: DateTime.now(),
-                                    createdByUid: "user.uid",
+                                    createdByUid: "",
                                     likedByUid: []);
+                                    
                                 if (widget.postModel != null) {
                                   postModel.id = widget.postModel!.id;
                                   postModel.createdAt =

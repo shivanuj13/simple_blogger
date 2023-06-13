@@ -1,8 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_blog/auth/model/user_model.dart';
-
-// import '../../auth/repo/auth_repo.dart';
 import '../../auth/provider/auth_provider.dart';
 import '../model/post_model.dart';
 import '../repo/post_repo.dart';
@@ -27,8 +27,11 @@ class PostProvider extends ChangeNotifier {
     isUpLoading = true;
     notifyListeners();
     try {
+      Map<String, dynamic> secrets = jsonDecode(
+          await DefaultAssetBundle.of(context)
+              .loadString("assets/secrets.json"));
       String token = context.read<AuthProvider>().currentUser?.token ?? "";
-      await _postRepo.createPost(postModel, token);
+      await _postRepo.createPost(postModel, token, secrets);
       readPost(context);
       isUpLoading = false;
       notifyListeners();
@@ -40,6 +43,8 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<void> readPost(BuildContext context) async {
+    UserModel? currentUser = context.read<AuthProvider>().currentUser;
+    if (currentUser == null) context.read<AuthProvider>().initialAuthHandler();
     String uId = context.read<AuthProvider>().currentUser!.id;
     String token = context.read<AuthProvider>().currentUser?.token ?? "";
     isLoading = true;
@@ -57,13 +62,16 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-//todo
-  Future<void> updatePost(PostModel postModel, String? imgPath,BuildContext context) async {
+  Future<void> updatePost(
+      PostModel postModel, String? imgPath, BuildContext context) async {
     isUpLoading = true;
     String token = context.read<AuthProvider>().currentUser?.token ?? '';
     notifyListeners();
     try {
-      await _postRepo.updatePost(postModel, imgPath,token);
+      Map<String, dynamic> secrets = jsonDecode(
+          await DefaultAssetBundle.of(context)
+              .loadString("assets/secrets.json"));
+      await _postRepo.updatePost(postModel, imgPath, token, secrets);
       readPost(context);
       isUpLoading = false;
       notifyListeners();
@@ -85,15 +93,12 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-
-  Future<void> deletePost(
-      String postId, String photoUrl, BuildContext context) async {
+  Future<void> deletePost(String postId, BuildContext context) async {
     isDeleting = true;
     String token = context.read<AuthProvider>().currentUser?.token ?? "";
-    print(postId);
     notifyListeners();
     try {
-      await _postRepo.deletePost(postId, photoUrl, token);
+      await _postRepo.deletePost(postId, token);
       readPost(context);
       isDeleting = false;
       notifyListeners();

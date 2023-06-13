@@ -115,24 +115,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ].animate(interval: 100.ms).fadeIn().moveY(begin: 2.h),
                 ),
               ),
-
-              // TextButton(
-              //     onPressed: () {
-              //       Navigator.pushNamed(context, RouteConst.editProfile);
-              //     },
-              //     child: const Text('Edit Profile')),
-              // TextButton(
-              //     onPressed: () {
-              //       Navigator.pushNamed(context, RouteConst.myPosts);
-              //     },
-              //     child: const Text('My Posts')),
-              // TextButton(
-              //     onPressed: () async {
-              //       await context.read<AuthProvider>().signOut();
-              //       Navigator.popUntil(context, (route) => route.isFirst);
-              //       Navigator.pushReplacementNamed(context, RouteConst.signIn);
-              //     },
-              //     child: const Text('Log Out'))
             ],
           );
         },

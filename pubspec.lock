@@ -33,6 +33,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.1"
+  cloudinary_public:
+    dependency: "direct main"
+    description:
+      name: cloudinary_public
+      sha256: "5fcb5046239bb9701c14f4207c19f272753000e16717f82721ba22d0542537d0"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.21.0"
   collection:
     dependency: transitive
     description:
@@ -57,6 +65,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      sha256: e44ce32c01f02c54a101551def8586f15d6189b4f999d4420aad38995ac62e6d
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.2.0"
   fadable_app_bar:
     dependency: "direct main"
     description:

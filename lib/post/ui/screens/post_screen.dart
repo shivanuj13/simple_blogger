@@ -10,6 +10,7 @@ import 'package:simple_blog/post/provider/post_provider.dart';
 
 import '../../../shared/const/text_style_const.dart';
 import '../../../shared/route/route_const.dart';
+import '../widget/delete_post_button_widget.dart';
 
 class PostScreen extends StatefulWidget {
   final bool isMyPost;
@@ -22,31 +23,13 @@ class PostScreen extends StatefulWidget {
   State<PostScreen> createState() => _PostScreenState();
 }
 
-class _PostScreenState extends State<PostScreen>
-    with SingleTickerProviderStateMixin {
+class _PostScreenState extends State<PostScreen> {
   late String uid;
   final ScrollController _scrollController = ScrollController();
-  double _scrollPosition = 0;
-  late final AnimationController _animationController;
 
   @override
   void initState() {
     uid = context.read<AuthProvider>().currentUser!.id;
-    _scrollController.addListener(() {
-      setState(() {
-        _scrollPosition = _scrollController.position.pixels;
-        if (_scrollPosition > 15.h) {
-          _animationController.reverse();
-        } else {
-          _animationController.forward();
-        }
-        // _animationController.forward();
-      });
-    });
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
     super.initState();
   }
 
@@ -85,38 +68,8 @@ class _PostScreenState extends State<PostScreen>
             backgroundColor: Theme.of(context).colorScheme.surface,
             actions: [
               if (postList.elementAt(value.selectedIndex!).createdByUid == uid)
-                IconButton(
-                  onPressed: context.watch<PostProvider>().isDeleting
-                      ? null
-                      : () async {
-                          try {
-                            await context.read<PostProvider>().deletePost(
-                                  postList.elementAt(value.selectedIndex!).id,
-                                  postList
-                                      .elementAt(value.selectedIndex!)
-                                      .photoUrl,
-                                  context,
-                                );
-                            if (mounted) {
-                              Navigator.pop(context);
-                            }
-                          } on Exception catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.toString()),
-                              ),
-                            );
-                          }
-                        },
-                  icon: context.watch<PostProvider>().isDeleting
-                      ? SizedBox(
-                          height: 4.h,
-                          width: 4.h,
-                          child: CircularProgressIndicator(
-                            color: _scrollPosition < 15.h ? Colors.white : null,
-                          ),
-                        )
-                      : const Icon(Icons.delete),
+                DeletePostButtonWidget(
+                  scrollController: _scrollController,
                 )
             ],
           ),
