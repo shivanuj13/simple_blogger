@@ -5,7 +5,7 @@ The Simple Blogging App is a mobile application that allows users to read, write
 
 > **Note:** This project uses Node.js API, A Firebase version of this project can be found on [**firebase-main**](https://github.com/shivanuj13/simple_blogger/tree/firebase-main) branch.
 
-> [**Node.js Backend Project can be found here**]("https://github.com/shivanuj13/simple_blogger_backend").
+> [**Node.js Backend Project can be found here**](https://github.com/shivanuj13/simple_blogger_backend).
 
 ## Screenshots
 <p align="center">
