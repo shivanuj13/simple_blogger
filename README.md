@@ -1,6 +1,22 @@
 # Simple Blogging App
 The Simple Blogging App is a mobile application that allows users to read, write, edit, and delete their own blog posts. The app is built using the Flutter framework, a popular open-source mobile app development SDK that enables developers to build high-performance, cross-platform apps for iOS and Android.
 
+
+> **Note:** This project uses Firebase, A Node.js version of this project can be found on [**main**](https://github.com/shivanuj13/simple_blogger/tree/main) branch.
+
+>**Release APK** for this version can be found [here(v0.0.2)](https://github.com/shivanuj13/simple_blogger/releases/tag/v0.0.2).
+
+## Screenshots
+<p align="center">
+  <img src="./assets/screenshots/sign_in.png" width="200" alt="Login Screen">
+    <img src="./assets/screenshots/sign_up.png" width="200" alt="Sign Up Screen">
+    <img src="./assets/screenshots/home.png" width="200" alt="Home Screen">
+    <img src="./assets/screenshots/profile.png" width="200" alt="Profile Screen">
+    <img src="./assets/screenshots/post_editor.png" width="200" alt="Create Post Screen">
+    <img src="./assets/screenshots/post.png" width="200" alt="Edit Post Screen">
+    <img src="./assets/screenshots/search.png" width="200" alt="Edit Post Screen">
+</p>
+
 ## Features
 - User authentication with Firebase Authentication
 - User profile management with Firebase Cloud Firestore
