@@ -43,7 +43,6 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<PostProvider>(builder: (context, value, wid) {
-     
       List<PostModel> postList = [];
       switch (widget.postListType) {
         case PostListType.myPost:
@@ -59,10 +58,8 @@ class _PostScreenState extends State<PostScreen> {
           postList = value.postBySelectedAuthor;
           break;
       }
-       bool isLiked = postList
-          .elementAt(value.selectedIndex!)
-          .likedByUid
-          .contains(uid);
+      bool isLiked =
+          postList.elementAt(value.selectedIndex!).likedByUid.contains(uid);
       return Scaffold(
           extendBodyBehindAppBar: true,
           floatingActionButton:
@@ -215,16 +212,22 @@ class _PostScreenState extends State<PostScreen> {
                                             .colorScheme
                                             .primary,
                                       ),
-                                    ).animate(onComplete: (controller) {
-                                      controller.repeat(reverse: true);
-                                    }).shimmer(
-                                      duration: 500.milliseconds,
                                     )
+                                      .animate(onComplete: (controller) {
+                                        controller.repeat(reverse: true);
+                                      })
+                                      .scale(
+                                        duration: 500.milliseconds,
+                                      )
+                                      .shimmer(
+                                        duration: 500.milliseconds,
+                                      )
                                   : IconButton(
                                       onPressed: () {
                                         context
                                             .read<PostProvider>()
-                                            .likeUnlikePost(context);
+                                            .likeUnlikePost(
+                                                context, widget.postListType);
                                       },
                                       icon: Icon(
                                         isLiked

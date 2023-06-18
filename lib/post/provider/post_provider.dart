@@ -6,6 +6,7 @@ import 'package:simple_blog/auth/model/user_model.dart';
 import '../../auth/provider/auth_provider.dart';
 import '../model/post_model.dart';
 import '../repo/post_repo.dart';
+import '../util/post_list_type.dart';
 
 class PostProvider extends ChangeNotifier {
   List<PostModel> postList = [];
@@ -87,8 +88,22 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> likeUnlikePost(BuildContext context) async {
-    String postId = postList.elementAt(selectedIndex!).id;
+  Future<void> likeUnlikePost(BuildContext context,PostListType postListType) async {
+    String postId;
+    switch(postListType) {
+      case PostListType.all:
+        postId = postList[selectedIndex!].id;
+        break;
+      case PostListType.myPost:
+        postId = myPostList[selectedIndex!].id;
+        break;
+      case PostListType.fromAuthorProfile:
+        postId = postBySelectedAuthor[selectedIndex!].id;
+        break;
+      case PostListType.subscription:
+        postId = postBySubscriptions[selectedIndex!].id;
+        break;
+    }
     String token = context.read<AuthProvider>().currentUser?.token ?? '';
     try {
       isLikeUnlike = true;
