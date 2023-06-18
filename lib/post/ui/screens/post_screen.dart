@@ -43,10 +43,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<PostProvider>(builder: (context, value, wid) {
-      bool isLiked = value.postList
-          .elementAt(value.selectedIndex!)
-          .likedByUid
-          .contains(uid);
+     
       List<PostModel> postList = [];
       switch (widget.postListType) {
         case PostListType.myPost:
@@ -62,6 +59,10 @@ class _PostScreenState extends State<PostScreen> {
           postList = value.postBySelectedAuthor;
           break;
       }
+       bool isLiked = postList
+          .elementAt(value.selectedIndex!)
+          .likedByUid
+          .contains(uid);
       return Scaffold(
           extendBodyBehindAppBar: true,
           floatingActionButton:
@@ -192,7 +193,7 @@ class _PostScreenState extends State<PostScreen> {
                               }
                             },
                             child: Text(
-                              '\u{270E}   ${value.postList.elementAt(value.selectedIndex!).author}',
+                              '\u{270E}   ${postList.elementAt(value.selectedIndex!).author}',
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 16.sp,
