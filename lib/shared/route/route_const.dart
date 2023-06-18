@@ -7,5 +7,6 @@ class RouteConst {
   static const postEditor = 'postEditor';
   static const myProfile = 'myProfile';
   static const editProfile = 'editProfile';
+  static const authorProfile = 'authorProfile';
   static const about = 'about';
 }

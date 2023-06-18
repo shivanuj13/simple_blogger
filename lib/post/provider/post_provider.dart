@@ -10,13 +10,14 @@ import '../repo/post_repo.dart';
 class PostProvider extends ChangeNotifier {
   List<PostModel> postList = [];
   List<PostModel> myPostList = [];
-  List<UserModel> userList = [];
+  List<PostModel> postBySelectedAuthor = [];
+  List<PostModel> postBySubscriptions = [];
   int? selectedIndex;
+  bool isLikeUnlike = false;
   bool isLoading = false;
   bool isUpLoading = false;
   bool isDeleting = false;
   final PostRepo _postRepo = PostRepo();
-  // final AuthRepo _authRepo = AuthRepo();
 
   void selectPost(int index) {
     selectedIndex = index;
@@ -44,13 +45,17 @@ class PostProvider extends ChangeNotifier {
 
   Future<void> readPost(BuildContext context) async {
     UserModel? currentUser = context.read<AuthProvider>().currentUser;
-    if (currentUser == null) context.read<AuthProvider>().initialAuthHandler();
-    String uId = context.read<AuthProvider>().currentUser!.id;
-    String token = context.read<AuthProvider>().currentUser?.token ?? "";
+    if (currentUser == null) {
+      await context.read<AuthProvider>().initialAuthHandler();
+      currentUser = context.read<AuthProvider>().currentUser;
+    }
+    String uId = currentUser!.id;
+    String token = currentUser.token;
     isLoading = true;
     notifyListeners();
     try {
       postList = await _postRepo.readPost(token);
+      getAllPostsFromSubscription(currentUser.subscriptionList);
       isLoading = false;
       myPostList =
           postList.where((element) => element.createdByUid == uId).toList();
@@ -86,8 +91,12 @@ class PostProvider extends ChangeNotifier {
     String postId = postList.elementAt(selectedIndex!).id;
     String token = context.read<AuthProvider>().currentUser?.token ?? '';
     try {
+      isLikeUnlike = true;
+      notifyListeners();
       await _postRepo.likeUnlikePost(postId, token);
       readPost(context);
+      isLikeUnlike = false;
+      notifyListeners();
     } on Exception {
       rethrow;
     }
@@ -107,5 +116,18 @@ class PostProvider extends ChangeNotifier {
       notifyListeners();
       rethrow;
     }
+  }
+
+  void getPostBySelectedAuthor(String authorId) {
+    postBySelectedAuthor =
+        postList.where((element) => element.createdByUid == authorId).toList();
+    notifyListeners();
+  }
+
+  void getAllPostsFromSubscription(List<String> subscriptionList) {
+    postBySubscriptions = postList
+        .where((element) => subscriptionList.contains(element.createdByUid))
+        .toList();
+    notifyListeners();
   }
 }

@@ -5,11 +5,13 @@ import 'package:simple_blog/post/ui/screens/home_screen.dart';
 import 'package:simple_blog/post/ui/screens/my_posts_screen.dart';
 import 'package:simple_blog/post/ui/screens/post_editor_screen.dart';
 import 'package:simple_blog/post/ui/screens/post_screen.dart';
+import 'package:simple_blog/post/util/post_list_type.dart';
+import 'package:simple_blog/profile/ui/screen/author_profile_screen.dart';
 import 'package:simple_blog/profile/ui/screen/my_profile_screen.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
 import '../../post/model/post_model.dart';
-import '../../profile/ui/screen/about_sreen.dart';
+import '../../profile/ui/screen/about_screen.dart';
 import '../../profile/ui/screen/edit_profile_screen.dart';
 
 class RouteGenerator {
@@ -25,7 +27,7 @@ class RouteGenerator {
         return _buildRoute(
             settings,
             PostScreen(
-              isMyPost: settings.arguments as bool,
+              postListType: settings.arguments as PostListType,
             ));
       case RouteConst.myPosts:
         return _buildRoute(settings, const MyPostsScreen());
@@ -39,6 +41,8 @@ class RouteGenerator {
         return _buildRoute(settings, const MyProfileScreen());
       case RouteConst.editProfile:
         return _buildRoute(settings, const EditProfileScreen());
+      case RouteConst.authorProfile:
+        return _buildRoute(settings, const AuthorProfileScreen());
       case RouteConst.about:
         return _buildRoute(settings, const AboutScreen());
       default:

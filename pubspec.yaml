@@ -45,6 +45,7 @@ dependencies:
   fadable_app_bar: ^0.0.3
   http: ^0.13.6
   cloudinary_public: ^0.21.0
+  google_fonts: ^4.0.4
 
 dev_dependencies:
   flutter_test:

@@ -133,4 +133,50 @@ class AuthRepo {
   }
 
   Future<void> signOut() async {}
+
+  Future<List<UserModel>> getAllUsers(String token) async {
+    try {
+      List<UserModel> userList = [];
+      headersList['Authorization'] = "Bearer $token";
+      http.Response response = await http.get(
+        Uri.parse("$apiPath/getAllUsers"),
+        headers: headersList,
+      );
+      Map<String, dynamic> res = jsonDecode(response.body);
+      if (res["status"]) {
+        for (var user in res["data"]["users"]) {
+          userList.add(UserModel.fromMap(user));
+        }
+        return userList;
+      } else {
+        throw http.ClientException(res["error"]);
+      }
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<UserModel> updateSubscription(String token, String authorId) async {
+    try {
+      headersList['Authorization'] = "Bearer $token";
+      http.Response response = await http.post(
+        Uri.parse("$apiPath/updateSubscriptions"),
+        headers: headersList,
+        body: jsonEncode({
+          "authorId": authorId,
+        }),
+      );
+
+      Map<String, dynamic> res = jsonDecode(response.body);
+
+      if (!res["status"]) {
+        throw http.ClientException(res["error"]);
+      }
+
+      UserModel userModel = UserModel.fromMap(res["data"]["user"]);
+      return userModel;
+    } on Exception {
+      rethrow;
+    }
+  }
 }

@@ -10,13 +10,14 @@ import 'package:simple_blog/post/provider/post_provider.dart';
 
 import '../../../shared/const/text_style_const.dart';
 import '../../../shared/route/route_const.dart';
+import '../../util/post_list_type.dart';
 import '../widget/delete_post_button_widget.dart';
 
 class PostScreen extends StatefulWidget {
-  final bool isMyPost;
+  final PostListType postListType;
   const PostScreen({
     super.key,
-    required this.isMyPost,
+    required this.postListType,
   });
 
   @override
@@ -46,8 +47,21 @@ class _PostScreenState extends State<PostScreen> {
           .elementAt(value.selectedIndex!)
           .likedByUid
           .contains(uid);
-      List<PostModel> postList =
-          widget.isMyPost ? value.myPostList : value.postList;
+      List<PostModel> postList = [];
+      switch (widget.postListType) {
+        case PostListType.myPost:
+          postList = value.myPostList;
+          break;
+        case PostListType.all:
+          postList = value.postList;
+          break;
+        case PostListType.subscription:
+          postList = value.postBySubscriptions;
+          break;
+        case PostListType.fromAuthorProfile:
+          postList = value.postBySelectedAuthor;
+          break;
+      }
       return Scaffold(
           extendBodyBehindAppBar: true,
           floatingActionButton:
@@ -155,33 +169,71 @@ class _PostScreenState extends State<PostScreen> {
                           SizedBox(
                             height: 4.h,
                           ),
-                          Text(
-                            '\u{270E}   ${value.postList.elementAt(value.selectedIndex!).author}',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 16.sp,
+                          TextButton(
+                            onPressed: () {
+                              if (postList
+                                      .elementAt(value.selectedIndex!)
+                                      .createdByUid ==
+                                  uid) {
+                                Navigator.pushReplacementNamed(
+                                    context, RouteConst.myProfile);
+                              } else {
+                                value.getPostBySelectedAuthor(postList
+                                    .elementAt(value.selectedIndex!)
+                                    .createdByUid);
+                                context.read<AuthProvider>().selectAuthor(
+                                    postList
+                                        .elementAt(value.selectedIndex!)
+                                        .createdByUid);
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  RouteConst.authorProfile,
+                                );
+                              }
+                            },
+                            child: Text(
+                              '\u{270E}   ${value.postList.elementAt(value.selectedIndex!).author}',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 16.sp,
+                              ),
+                              textAlign: TextAlign.justify,
                             ),
-                            textAlign: TextAlign.justify,
-                          ),
-                          SizedBox(
-                            height: 2.h,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<PostProvider>()
-                                      .likeUnlikePost(context);
-                                },
-                                icon: Icon(
-                                  isLiked
-                                      ? Icons.favorite
-                                      : Icons.favorite_outline,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
+                              value.isLikeUnlike
+                                  ? IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        isLiked
+                                            ? Icons.favorite
+                                            : Icons.favorite_outline,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ).animate(onComplete: (controller) {
+                                      controller.repeat(reverse: true);
+                                    }).shimmer(
+                                      duration: 500.milliseconds,
+                                    )
+                                  : IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<PostProvider>()
+                                            .likeUnlikePost(context);
+                                      },
+                                      icon: Icon(
+                                        isLiked
+                                            ? Icons.favorite
+                                            : Icons.favorite_outline,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
                               Text(postList
                                   .elementAt(value.selectedIndex!)
                                   .likedByUid
