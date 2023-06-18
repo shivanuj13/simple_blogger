@@ -8,16 +8,17 @@ import '../../../shared/const/text_style_const.dart';
 import '../../../shared/route/route_const.dart';
 import '../../model/post_model.dart';
 import '../../provider/post_provider.dart';
+import '../../util/post_list_type.dart';
 
 class PostSnippetWidget extends StatefulWidget {
   const PostSnippetWidget(
       {super.key,
       required this.postModel,
       required this.index,
-      this.isMyPost = false});
+      required this.postListType });
   final PostModel postModel;
   final int index;
-  final bool isMyPost;
+  final PostListType postListType;
 
   @override
   State<PostSnippetWidget> createState() => _PostSnippetWidgetState();
@@ -26,7 +27,8 @@ class PostSnippetWidget extends StatefulWidget {
 class _PostSnippetWidgetState extends State<PostSnippetWidget> {
   void selectPost(int index) {
     context.read<PostProvider>().selectPost(index);
-    Navigator.pushNamed(context, RouteConst.post, arguments: widget.isMyPost);
+    Navigator.pushNamed(context, RouteConst.post,
+        arguments: widget.postListType);
   }
 
   @override

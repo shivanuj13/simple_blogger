@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_generator.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'auth/provider/auth_provider.dart';
 import 'shared/util/shared_pref.dart';
 
@@ -28,6 +28,9 @@ class _MyAppState extends State<MyApp> {
           initialRoute: SharedPref.instance.route,
           onGenerateRoute: RouteGenerator.generateRoute,
           theme: ThemeData(
+            textTheme: GoogleFonts.notoSansTextTheme(
+              Theme.of(context).textTheme,
+            ),
             useMaterial3: true,
             colorScheme: const ColorScheme.light(
               primary: Color(0xFF850E35),

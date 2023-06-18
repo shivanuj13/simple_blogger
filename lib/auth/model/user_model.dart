@@ -6,6 +6,8 @@ class UserModel {
   String email;
   String password;
   String photoUrl;
+  int subscriberCount;
+  List<String> subscriptionList;
   String token;
   DateTime createdAt;
   UserModel({
@@ -14,6 +16,8 @@ class UserModel {
     required this.email,
     required this.password,
     required this.photoUrl,
+    this.subscriberCount = 0,
+    this.subscriptionList = const [],
     this.token = "",
     required this.createdAt,
   });
@@ -25,6 +29,8 @@ class UserModel {
       'email': email,
       'password': password,
       'photoUrl': photoUrl,
+      'subscriberCount': subscriberCount,
+      'subscriptionList': subscriptionList,
       'token': token,
       'createdAt': createdAt.toIso8601String(),
     };
@@ -37,6 +43,8 @@ class UserModel {
       email: map['email'] ?? '',
       password: map['password'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
+      subscriberCount: map['subscriberCount'] ?? 0,
+      subscriptionList: List<String>.from(map['subscriptionList'] ?? []),
       token: map['token'] ?? '',
       createdAt: DateTime.parse(map['createdAt']),
     );
@@ -49,6 +57,6 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, password: $password, photoUrl: $photoUrl, token: $token, createdAt: $createdAt)';
+    return 'UserModel(id: $id, name: $name, email: $email, password: $password, photoUrl: $photoUrl, subscriberCount: $subscriberCount, subscriptionList: $subscriptionList, token: $token, createdAt: $createdAt)';
   }
 }

@@ -9,11 +9,15 @@ class AuthProvider extends ChangeNotifier {
   final AuthRepo _authRepo = AuthRepo();
   UserModel? userModel;
   UserModel? currentUser;
+  List<UserModel> userList = [];
+  UserModel? selectedAuthor;
   bool isLoading = false;
+  bool isUpdatingSubscription = false;
 
   Future<void> initialAuthHandler() async {
     try {
       currentUser = SharedPref.instance.getUser();
+      await getAllUsers();
     } on Exception {
       rethrow;
     }
@@ -29,6 +33,7 @@ class AuthProvider extends ChangeNotifier {
       currentUser = await _authRepo.signUp(userModel, secrets);
       await SharedPref.instance.setUser(currentUser!);
       currentUser = SharedPref.instance.getUser();
+      await getAllUsers();
       isLoading = false;
       notifyListeners();
     } on Exception {
@@ -45,6 +50,7 @@ class AuthProvider extends ChangeNotifier {
       currentUser = await _authRepo.signIn(email, password);
       await SharedPref.instance.setUser(currentUser!);
       currentUser = SharedPref.instance.getUser();
+      await getAllUsers();
       isLoading = false;
       notifyListeners();
     } on Exception {
@@ -87,6 +93,32 @@ class AuthProvider extends ChangeNotifier {
     } on Exception {
       isLoading = false;
       notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> getAllUsers() async {
+    userList = await _authRepo.getAllUsers(currentUser!.token);
+    // notifyListeners();
+  }
+
+  void selectAuthor(String authId) {
+    selectedAuthor = userList.firstWhere((element) => element.id == authId);
+    notifyListeners();
+  }
+
+  Future<void> updateSubscription(String authorId) async {
+    try {
+      isUpdatingSubscription = true;
+      notifyListeners();
+      String token = currentUser!.token;
+      currentUser = await _authRepo.updateSubscription(token, authorId);
+      currentUser!.token = token;
+      await SharedPref.instance.setUser(currentUser!);
+      currentUser = SharedPref.instance.getUser();
+      isUpdatingSubscription = false;
+      notifyListeners();
+    } on Exception {
       rethrow;
     }
   }

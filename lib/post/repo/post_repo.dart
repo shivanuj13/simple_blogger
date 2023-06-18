@@ -16,10 +16,10 @@ class PostRepo {
     'Authorization': '',
   };
 
-  Future<void> createPost(PostModel postModel, String token,Map<String,dynamic>secrets) async {
+  Future<void> createPost(
+      PostModel postModel, String token, Map<String, dynamic> secrets) async {
     try {
-      //todo: implement image uploading
-      postModel.photoUrl = await uploadImage(postModel.photoUrl,secrets);
+      postModel.photoUrl = await uploadImage(postModel.photoUrl, secrets);
       headersList['Authorization'] = "Bearer $token";
       Uri url = Uri.parse("$apiPath/create");
       http.Response response = await http.post(
@@ -64,12 +64,12 @@ class PostRepo {
     }
   }
 
-  Future<void> updatePost(
-      PostModel postModel, String? imgPath, String token,Map<String,dynamic>secrets) async {
+  Future<void> updatePost(PostModel postModel, String? imgPath, String token,
+      Map<String, dynamic> secrets) async {
     try {
       if (imgPath != null) {
         // deleteImage(postModel.photoUrl);
-        postModel.photoUrl = await uploadImage(imgPath,secrets);
+        postModel.photoUrl = await uploadImage(imgPath, secrets);
       }
       headersList['Authorization'] = "Bearer $token";
       Uri url = Uri.parse("$apiPath/update");
