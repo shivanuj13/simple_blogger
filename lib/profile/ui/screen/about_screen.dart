@@ -23,7 +23,7 @@ class AboutScreenState extends State<AboutScreen> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
         child: Text(
-          '''Welcome $userName!,
+          '''Welcome $userName,
 
 It a simple blog application where you can express your thoughts, share your experiences, and connect with others.
       
