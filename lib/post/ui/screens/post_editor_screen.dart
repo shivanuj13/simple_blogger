@@ -50,6 +50,85 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
         appBar: AppBar(
           title: const Text('Post Editor'),
         ),
+        bottomNavigationBar: BottomAppBar(
+          height: 8.h,
+          padding: EdgeInsets.zero,
+          child: Consumer<PostProvider>(builder: (context, value, wid) {
+            return value.isUpLoading
+                ? Column(
+                    children: [
+                      const LinearProgressIndicator(),
+                      const Spacer(),
+                      Text(
+                        'Uploading...',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                  )
+                : TextButton(
+                    style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    )),
+                    onPressed: () async {
+                      if (!formKey.currentState!.validate()) {
+                        return;
+                      }
+                      if (imgPath == null && widget.postModel == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please select an image'),
+                          ),
+                        );
+                        return;
+                      }
+                      try {
+                        // User user = FirebaseAuth.instance.currentUser!;
+                        PostModel postModel = PostModel(
+                            id: '',
+                            title: _titleController.text,
+                            content: _contentController.text,
+                            photoUrl: imgPath ?? '',
+                            author: '',
+                            createdAt: DateTime.now(),
+                            createdByUid: "",
+                            likedByUid: []);
+
+                        if (widget.postModel != null) {
+                          postModel.id = widget.postModel!.id;
+                          postModel.createdAt = widget.postModel!.createdAt;
+                          postModel.photoUrl = widget.postModel!.photoUrl;
+                          postModel.likedByUid = widget.postModel!.likedByUid;
+
+                          await context
+                              .read<PostProvider>()
+                              .updatePost(postModel, imgPath, context);
+                        } else {
+                          await context.read<PostProvider>().createPost(
+                                postModel,
+                                context,
+                              );
+                        }
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      } on Exception catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(widget.postModel != null
+                        ? 'Update Post'
+                        : 'Create Post'),
+                  );
+          }),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
@@ -74,8 +153,8 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 2.h),
-                      height: 20.h,
-                      width: 60.w,
+                      height: 25.h,
+                      width: 80.w,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.grey,
@@ -86,86 +165,25 @@ class _PostEditorScreenState extends State<PostEditorScreen> {
                           ? widget.postModel != null
                               ? Image.network(
                                   widget.postModel!.photoUrl,
-                                  height: 20.h,
-                                  width: 60.w,
+                                  height: 25.h,
+                                  width: 80.w,
                                   fit: BoxFit.cover,
                                 )
                               : Icon(
                                   Icons.add_a_photo_outlined,
-                                  size: 26.sp,
+                                  size: 28.sp,
+                                  color: Colors.grey,
                                 )
                           : Image.file(
                               File(imgPath!),
-                              height: 20.h,
-                              width: 60.w,
+                              height: 25.h,
+                              width: 80.w,
                               fit: BoxFit.cover,
                             ),
                     ),
                   ),
                   TitleFieldWidget(titleController: _titleController),
                   ContentFieldWidget(contentController: _contentController),
-                  Consumer<PostProvider>(builder: (context, value, wid) {
-                    return value.isUpLoading
-                        ? const RefreshProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: () async {
-                              if (!formKey.currentState!.validate()) {
-                                return;
-                              }
-                              if (imgPath == null && widget.postModel == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please select an image'),
-                                  ),
-                                );
-                                return;
-                              }
-                              try {
-                                // User user = FirebaseAuth.instance.currentUser!;
-                                PostModel postModel = PostModel(
-                                    id: '',
-                                    title: _titleController.text,
-                                    content: _contentController.text,
-                                    photoUrl: imgPath ?? '',
-                                    author: '',
-                                    createdAt: DateTime.now(),
-                                    createdByUid: "",
-                                    likedByUid: []);
-                                    
-                                if (widget.postModel != null) {
-                                  postModel.id = widget.postModel!.id;
-                                  postModel.createdAt =
-                                      widget.postModel!.createdAt;
-                                  postModel.photoUrl =
-                                      widget.postModel!.photoUrl;
-                                  postModel.likedByUid =
-                                      widget.postModel!.likedByUid;
-
-                                  await context
-                                      .read<PostProvider>()
-                                      .updatePost(postModel, imgPath, context);
-                                } else {
-                                  await context.read<PostProvider>().createPost(
-                                        postModel,
-                                        context,
-                                      );
-                                }
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                              } on Exception catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(e.toString()),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text(widget.postModel != null
-                                ? 'Update Post'
-                                : 'Create Post'),
-                          );
-                  })
                 ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),
               ),
             ),

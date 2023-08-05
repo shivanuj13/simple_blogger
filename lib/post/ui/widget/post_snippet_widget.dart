@@ -15,7 +15,7 @@ class PostSnippetWidget extends StatefulWidget {
       {super.key,
       required this.postModel,
       required this.index,
-      required this.postListType });
+      required this.postListType});
   final PostModel postModel;
   final int index;
   final PostListType postListType;
@@ -41,8 +41,7 @@ class _PostSnippetWidgetState extends State<PostSnippetWidget> {
         },
         child: Card(
           borderOnForeground: false,
-          color: Theme.of(context).colorScheme.background,
-          elevation: 8,
+          elevation: 0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

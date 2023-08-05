@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
+import 'package:simple_blog/post/ui/screens/image_screen.dart';
 
 import '../../../post/ui/widget/post_snippet_widget.dart';
 import '../../../post/util/post_list_type.dart';
@@ -50,11 +51,27 @@ class _AuthorProfileScreenState extends State<AuthorProfileScreen> {
                         child: authProvider.selectedAuthor?.photoUrl == null ||
                                 authProvider.selectedAuthor!.photoUrl.isEmpty
                             ? Icon(Icons.person, size: 22.w)
-                            : Image.network(
-                                authProvider.selectedAuthor!.photoUrl,
-                                width: 22.w,
-                                height: 22.w,
-                                fit: BoxFit.cover,
+                            : InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ImagePage(
+                                                heroTag: authProvider
+                                                    .selectedAuthor!.id,
+                                                imgUrl: authProvider
+                                                    .selectedAuthor!.photoUrl,
+                                              )));
+                                },
+                                child: Hero(
+                                  tag: authProvider.selectedAuthor!.id,
+                                  child: Image.network(
+                                    authProvider.selectedAuthor!.photoUrl,
+                                    width: 22.w,
+                                    height: 22.w,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
                       ),
                     )

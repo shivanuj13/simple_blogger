@@ -46,14 +46,15 @@ class PostProvider extends ChangeNotifier {
 
   Future<void> readPost(BuildContext context) async {
     UserModel? currentUser = context.read<AuthProvider>().currentUser;
+    isLoading = true;
+    notifyListeners();
     if (currentUser == null) {
       await context.read<AuthProvider>().initialAuthHandler();
       currentUser = context.read<AuthProvider>().currentUser;
     }
     String uId = currentUser!.id;
     String token = currentUser.token;
-    isLoading = true;
-    notifyListeners();
+
     try {
       postList = await _postRepo.readPost(token);
       getAllPostsFromSubscription(currentUser.subscriptionList);
@@ -88,9 +89,10 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> likeUnlikePost(BuildContext context,PostListType postListType) async {
+  Future<void> likeUnlikePost(
+      BuildContext context, PostListType postListType) async {
     String postId;
-    switch(postListType) {
+    switch (postListType) {
       case PostListType.all:
         postId = postList[selectedIndex!].id;
         break;

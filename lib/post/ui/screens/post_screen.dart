@@ -7,6 +7,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/model/post_model.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
+import 'package:simple_blog/post/ui/screens/image_screen.dart';
 
 import '../../../shared/const/text_style_const.dart';
 import '../../../shared/route/route_const.dart';
@@ -118,18 +119,35 @@ class _PostScreenState extends State<PostScreen> {
                       tag: postList.elementAt(value.selectedIndex!).id,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          postList.elementAt(value.selectedIndex!).photoUrl,
-                          height: 30.h,
-                          width: 80.w,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, obj, stack) {
-                            return SizedBox(
-                                width: 100.w,
-                                height: 20.h,
-                                child: Center(
-                                    child: Icon(Icons.photo, size: 20.w)));
-                          },
+                        child: Material(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ImagePage(
+                                            imgUrl: postList
+                                                .elementAt(value.selectedIndex!)
+                                                .photoUrl,
+                                            heroTag: postList
+                                                .elementAt(value.selectedIndex!)
+                                                .id,
+                                          )));
+                            },
+                            child: Image.network(
+                              postList.elementAt(value.selectedIndex!).photoUrl,
+                              height: 30.h,
+                              width: 80.w,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, obj, stack) {
+                                return SizedBox(
+                                    width: 100.w,
+                                    height: 20.h,
+                                    child: Center(
+                                        child: Icon(Icons.photo, size: 20.w)));
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ),

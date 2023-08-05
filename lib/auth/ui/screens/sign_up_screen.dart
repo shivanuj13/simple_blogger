@@ -86,6 +86,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return value.isLoading
                         ? const RefreshProgressIndicator()
                         : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size.fromWidth(
+                                40.w,
+                              ),
+                            ),
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 if (imgPath == null) {
