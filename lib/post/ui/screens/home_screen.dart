@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/post/util/post_list_type.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widget/custom_search_delegate.dart';
 import '../widget/post_snippet_widget.dart';
@@ -17,10 +19,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String version = '';
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
+      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+        setState(() {
+          version = packageInfo.version;
+        });
+      });
       context.read<PostProvider>().readPost(context);
     });
   }
@@ -36,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6.w),
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
                       child: IconButton(
                         onPressed: () {
                           Scaffold.of(context).closeDrawer();
@@ -46,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 6.h,
+                    height: 2.h,
                   ),
                   ListTile(
                     trailing: const Icon(Icons.person),
@@ -84,6 +92,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             context, RouteConst.signIn);
                       }
                     },
+                  ),
+                  const Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        launchUrl(
+                          Uri.parse(
+                              "https://github.com/shivanuj13/simple_blogger"),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
+                      child: Text('Version: $version')),
+                  SizedBox(
+                    height: 2.h,
                   ),
                 ],
               );

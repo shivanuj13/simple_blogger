@@ -19,6 +19,8 @@ class TitleFieldWidget extends StatelessWidget {
         },
         controller: titleController,
         keyboardType: TextInputType.name,
+        maxLines: 2,
+        minLines: 1,
         decoration: const InputDecoration(
           labelText: 'Title',
           border: OutlineInputBorder(

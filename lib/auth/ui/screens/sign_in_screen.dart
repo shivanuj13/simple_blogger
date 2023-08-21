@@ -20,6 +20,17 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  String greetingText() {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning,';
+    }
+    if (hour < 17) {
+      return 'Good Afternoon,';
+    }
+    return 'Good Evening,';
+  }
+
   Future<void> signIn() async {
     FocusManager.instance.primaryFocus?.unfocus();
     if (!formKey.currentState!.validate()) {
@@ -48,45 +59,124 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.w),
-            child: Form(
-              key: formKey,
+      // appBar: AppBar(
+      //   title: const Text('Sign In'),
+      // ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 40.h,
+              width: 100.w,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(80),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color.fromARGB(255, 155, 78, 52),
+                    Color.fromARGB(255, 168, 54, 54),
+                    Color.fromARGB(255, 148, 32, 32),
+                  ],
+                ),
+              ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  EmailFieldWidget(
-                    emailController: _emailController,
+                  const Spacer(
+                    flex: 7,
                   ),
-                  SizedBox(
-                    height: 2.h,
+                  Center(
+                    child: Image.asset(
+                      'assets/images/blog.png',
+                      height: 10.h,
+                    ),
                   ),
-                  PasswordFieldWidget(passwordController: _passwordController),
-                  SizedBox(
-                    height: 6.h,
+                  const Spacer(
+                    flex: 3,
                   ),
-                  Consumer<AuthProvider>(builder: (context, value, wid) {
-                    return value.isLoading
-                        ? const RefreshProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: signIn,
-                            child: const Text('Sign In'),
-                          );
-                  }),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                            context, RouteConst.signUp);
-                      },
-                      child: const Text('Don\'t have an account? Sign Up')),
-                ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 35.w,
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        greetingText(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          // fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10.w,
+                      bottom: 4.h,
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        'Welcome Back !',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          // fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    EmailFieldWidget(
+                      emailController: _emailController,
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    PasswordFieldWidget(
+                        passwordController: _passwordController),
+                    SizedBox(
+                      height: 6.h,
+                    ),
+                    Consumer<AuthProvider>(builder: (context, value, wid) {
+                      return value.isLoading
+                          ? const RefreshProgressIndicator()
+                          : ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size.fromWidth(
+                                  40.w,
+                                ),
+                              ),
+                              onPressed: signIn,
+                              child: const Text('Sign In'),
+                            );
+                    }),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, RouteConst.signUp);
+                        },
+                        child: const Text('Don\'t have an account? Sign Up')),
+                  ].animate(interval: 80.ms).fadeIn().moveY(begin: 2.h),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

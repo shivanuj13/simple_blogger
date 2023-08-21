@@ -6,6 +6,8 @@ import 'package:simple_blog/auth/provider/auth_provider.dart';
 import 'package:simple_blog/post/provider/post_provider.dart';
 import 'package:simple_blog/shared/route/route_const.dart';
 
+import '../../../post/ui/screens/image_screen.dart';
+
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -51,11 +53,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           child: value.currentUser?.photoUrl == null ||
                                   value.currentUser!.photoUrl.isEmpty
                               ? Icon(Icons.person, size: 22.w)
-                              : Image.network(
-                                  value.currentUser!.photoUrl,
-                                  width: 22.w,
-                                  height: 22.w,
-                                  fit: BoxFit.cover,
+                              : InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ImagePage(
+                                                  heroTag: value
+                                                      .currentUser!.photoUrl,
+                                                  imgUrl: value
+                                                      .currentUser!.photoUrl,
+                                                )));
+                                  },
+                                  child: Image.network(
+                                    value.currentUser!.photoUrl,
+                                    width: 22.w,
+                                    height: 22.w,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                         ),
                       ),

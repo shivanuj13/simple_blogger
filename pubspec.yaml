@@ -46,6 +46,9 @@ dependencies:
   http: ^0.13.6
   cloudinary_public: ^0.21.0
   google_fonts: ^4.0.4
+  package_info_plus: ^4.0.2
+  photo_view: ^0.14.0
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +75,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/secrets.json
-  #   - images/a_dot_ham.jpeg
+    - assets/images/blog.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

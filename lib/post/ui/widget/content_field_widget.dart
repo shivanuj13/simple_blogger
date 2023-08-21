@@ -19,8 +19,8 @@ class ContentFieldWidget extends StatelessWidget {
         },
         controller: contentController,
         keyboardType: TextInputType.multiline,
-        minLines: 4,
-        maxLines: 10,
+        minLines: 10,
+        maxLines: null,
         decoration: const InputDecoration(
           labelText: 'Content',
           border: OutlineInputBorder(
