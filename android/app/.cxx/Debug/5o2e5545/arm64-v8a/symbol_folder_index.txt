@@ -1,0 +1,1 @@
+/Users/anujkumar/dev/hobbie/simple_blogger/build/app/intermediates/cxx/Debug/5o2e5545/obj/arm64-v8a
